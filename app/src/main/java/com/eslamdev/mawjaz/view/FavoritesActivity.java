@@ -3,7 +3,7 @@ package com.eslamdev.mawjaz.view;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout; // <-- تم التعديل: استيراد LinearLayout
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,9 +26,8 @@ import java.util.concurrent.Executors;
 public class FavoritesActivity extends BaseActivity implements MovieAdapter.OnMovieActionListener {
 
     private RecyclerView favoritesRecyclerView;
-    private TextView emptyFavoritesText;
+    private LinearLayout emptyFavoritesText; // <-- تم التعديل: تغيير النوع من TextView لـ LinearLayout
     private MovieAdapter movieAdapter;
-    // --- تمت إضافة هذه المتغيرات كمتغيرات عامة في الكلاس ---
     private FavoriteMovieDao favoriteMovieDao;
     private ExecutorService databaseExecutor;
 
@@ -41,20 +40,24 @@ public class FavoritesActivity extends BaseActivity implements MovieAdapter.OnMo
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getString(R.string.favorites));
+            getSupportActionBar().setTitle(getString(R.string.favorites_title)); // تأكد أن الاسم في strings.xml
         }
 
         favoritesRecyclerView = findViewById(R.id.favoritesRecyclerView);
-        emptyFavoritesText = findViewById(R.id.emptyFavoritesText);
+        emptyFavoritesText = findViewById(R.id.emptyFavoritesText); // الآن يتم الربط بـ LinearLayout بشكل صحيح
 
-        // --- تهيئة الـ DAO والـ Executor هنا مرة واحدة ---
+        // تهيئة قاعدة البيانات
         AppDatabase db = AppDatabase.getInstance(getApplicationContext());
         favoriteMovieDao = db.favoriteMovieDao();
         databaseExecutor = Executors.newSingleThreadExecutor();
 
-        movieAdapter = new MovieAdapter(this, true, R.layout.item_movie_grid);
+        // إعداد القائمة
+        // استخدم الكونستركتور المناسب للأدابتير الخاص بك
+        // إذا كان الأدابتير لا يدعم 3 متغيرات، استخدم: new MovieAdapter(this);
+        movieAdapter = new MovieAdapter(this);
         movieAdapter.setOnMovieActionListener(this);
-        favoritesRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        favoritesRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // عرض شبكي 2 أعمدة
         favoritesRecyclerView.setAdapter(movieAdapter);
     }
 
@@ -97,29 +100,24 @@ public class FavoritesActivity extends BaseActivity implements MovieAdapter.OnMo
         return super.onOptionsItemSelected(item);
     }
 
-    // --- هذا هو التعديل الأساسي ---
     @Override
     public void onMovieRemovedFromFavorites(Movie movie) {
-        // 1. إنشاء Entity للفيلم المراد حذفه
         FavoriteMovieEntity movieToDelete = new FavoriteMovieEntity(
                 movie.getId(), movie.getTitle(), movie.getVoteAverage(),
                 movie.getOverview(), movie.getPosterPath(), movie.getReleaseDate()
         );
 
-        // 2. تنفيذ عملية الحذف في الخلفية
         databaseExecutor.execute(() -> {
             favoriteMovieDao.deleteFavoriteMovie(movieToDelete);
-            // 3. بعد الحذف، نطلب إعادة تحميل القائمة على الواجهة الرئيسية
             runOnUiThread(this::loadFavoriteMovies);
         });
-        String rem= getString(R.string.removed_from_favorites);
 
-        // 4. إظهار رسالة للمستخدم فورًا
-        Toast.makeText(this, movie.getTitle() +rem, Toast.LENGTH_SHORT).show();
+        String rem = getString(R.string.removed_from_favorites);
+        Toast.makeText(this, movie.getTitle() + " " + rem, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onFavoriteStatusChanged(Movie movie, boolean isFavorite) {
-        // لا نحتاج لعمل أي شيء هنا
+        // لا نحتاج لتنفيذ شيء هنا لأننا في صفحة المفضلة، أي تغيير يعني الحذف
     }
 }

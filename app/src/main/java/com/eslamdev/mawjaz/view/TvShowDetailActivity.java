@@ -1,9 +1,9 @@
 package com.eslamdev.mawjaz.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -15,11 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.eslamdev.mawjaz.BuildConfig;
 import com.eslamdev.mawjaz.R;
 import com.eslamdev.mawjaz.adapter.CastAdapter;
 import com.eslamdev.mawjaz.adapter.WatchProviderAdapter;
@@ -27,43 +28,42 @@ import com.eslamdev.mawjaz.api.ActorDetails;
 import com.eslamdev.mawjaz.database.FavoriteMovieEntity;
 import com.eslamdev.mawjaz.database.TvShowDetailViewModel;
 import com.eslamdev.mawjaz.database.TvShowDetailViewModelFactory;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class TvShowDetailActivity extends BaseActivity implements CastAdapter.OnCastMemberClickListener, WatchProviderAdapter.OnProviderClickListener {
 
     private TvShowDetailViewModel viewModel;
-
     private InterstitialAd mInterstitialAd;
 
-    private ImageView movieImageView;
-    private TextView titleTextView, voteTextView, overviewTextView, releaseDateTextView, seasonsTextView;
-    private MaterialButton btnWatchTrailer, btnToggleFavorite, btnToggleWatchlist;
-    private RecyclerView castRecyclerView, watchProvidersRecyclerView;
-    private View castTitle, providersTitle;
+    // --- UI Components Updated ---
+    private ImageView detailPoster;
+    private TextView detailTitle, detailRating, detailOverview, detailYear;
+    private FloatingActionButton fabShare;
+    private MaterialButton btnPlayTrailer, btnFavorite, btnWatchlist;
+    private RecyclerView rvCast;
 
     private CastAdapter castAdapter;
     private WatchProviderAdapter watchProviderAdapter;
-
-    private FavoriteMovieEntity currentContentEntity;
+    private FavoriteMovieEntity currentTvShowEntity;
     private String watchProviderLink = null;
     private String trailerUrl = null;
+    private AlertDialog actorDetailsDialog;
     private Boolean wasFavorite = null;
     private Boolean wasInWatchlist = null;
-    private AlertDialog actorDetailsDialog;
-    private FloatingActionButton fabShare;
     private String originalLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        supportPostponeEnterTransition();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tvshow_detail);
 
@@ -72,26 +72,25 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         setupRecyclerViews();
         getIntentData();
         setupViewModel();
-        observeViewModel();
+        setupObservers();
         setupClickListeners();
         loadInterstitialAd();
     }
 
     private void initializeViews() {
-        movieImageView = findViewById(R.id.movieImage);
-        titleTextView = findViewById(R.id.movieTitle);
-        voteTextView = findViewById(R.id.movieVote);
-        overviewTextView = findViewById(R.id.movieOverview);
-        releaseDateTextView = findViewById(R.id.movieReleaseDate);
-        seasonsTextView = findViewById(R.id.tv_seasons_count);
-        btnWatchTrailer = findViewById(R.id.btnWatchTrailer);
-        btnToggleFavorite = findViewById(R.id.btnToggleFavorite);
-        btnToggleWatchlist = findViewById(R.id.btnToggleWatchlist);
-        castRecyclerView = findViewById(R.id.cast_recycler_view);
-        watchProvidersRecyclerView = findViewById(R.id.watch_providers_recycler_view);
-        castTitle = findViewById(R.id.cast_title);
-        providersTitle = findViewById(R.id.watch_providers_title);
+        detailPoster = findViewById(R.id.detail_poster);
+        detailTitle = findViewById(R.id.detail_title);
+        detailRating = findViewById(R.id.detail_rating);
+        detailOverview = findViewById(R.id.detail_overview);
+        detailYear = findViewById(R.id.detail_year);
+
         fabShare = findViewById(R.id.fabShare);
+
+        btnPlayTrailer = findViewById(R.id.btn_play_trailer);
+        btnFavorite = findViewById(R.id.btn_favorite);
+        btnWatchlist = findViewById(R.id.btn_watchlist);
+
+        rvCast = findViewById(R.id.rv_cast);
     }
 
     private void setupToolbar() {
@@ -99,105 +98,112 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
     private void setupRecyclerViews() {
         castAdapter = new CastAdapter(this);
         castAdapter.setOnCastMemberClickListener(this);
-        castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        castRecyclerView.setAdapter(castAdapter);
+        rvCast.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvCast.setAdapter(castAdapter);
 
+        // WatchProviderAdapter initialization kept just in case you add it back to XML
         watchProviderAdapter = new WatchProviderAdapter(this);
         watchProviderAdapter.setOnProviderClickListener(this);
-        watchProvidersRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        watchProvidersRecyclerView.setAdapter(watchProviderAdapter);
     }
 
     private void getIntentData() {
-        int contentId = getIntent().getIntExtra("id", -1);
-        String contentTitle = getIntent().getStringExtra("title");
-        String posterPath = getIntent().getStringExtra("image_url");
-
+        int tvId = getIntent().getIntExtra("id", -1);
+        String tvTitle = getIntent().getStringExtra("title");
+        String tvPosterPath = getIntent().getStringExtra("image_url");
         this.originalLanguage = getIntent().getStringExtra("original_language");
 
-        currentContentEntity = new FavoriteMovieEntity(contentId, contentTitle, 0, "", posterPath, "");
-        titleTextView.setText(contentTitle);
-        Picasso.get().load(posterPath).into(movieImageView);
+        currentTvShowEntity = new FavoriteMovieEntity(tvId, tvTitle, 0, "", tvPosterPath, "");
+
+        ViewCompat.setTransitionName(detailPoster, "poster_" + tvId);
+        detailTitle.setText(tvTitle);
+
+        if (tvPosterPath != null && !tvPosterPath.isEmpty()) {
+            String fullUrl = tvPosterPath.startsWith("http") ? tvPosterPath : "https://image.tmdb.org/t/p/w780" + tvPosterPath;
+            Picasso.get()
+                    .load(fullUrl)
+                    .noFade()
+                    .into(detailPoster, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            supportStartPostponedEnterTransition();
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            supportStartPostponedEnterTransition();
+                        }
+                    });
+        } else {
+            supportStartPostponedEnterTransition();
+        }
     }
 
     private void setupViewModel() {
-        if (currentContentEntity.getId() == -1) return;
-        String apiKey = getString(R.string.api_key);
-        TvShowDetailViewModelFactory factory = new TvShowDetailViewModelFactory(getApplication(), currentContentEntity.getId(), apiKey, this.originalLanguage);
+        int tvId = currentTvShowEntity.getId();
+        if (tvId == -1) {
+            Toast.makeText(this, R.string.error_no_content, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        String apiKey = BuildConfig.TMDB_API_KEY;
+        TvShowDetailViewModelFactory factory = new TvShowDetailViewModelFactory(getApplication(), tvId, apiKey, this.originalLanguage);
         viewModel = new ViewModelProvider(this, factory).get(TvShowDetailViewModel.class);
     }
 
-    private void observeViewModel() {
-        viewModel.tvShowDetails.observe(this, details -> {
-            if (details != null) {
-                getSupportActionBar().setTitle(details.getName());
-                titleTextView.setText(details.getName());
-                overviewTextView.setText(details.getOverview());
-                voteTextView.setText(String.format("%.1f", details.getVoteAverage()));
-                releaseDateTextView.setText(details.getFirstAirDate() != null && details.getFirstAirDate().length() >= 4 ? details.getFirstAirDate().substring(0, 4) : "N/A");
-
-                seasonsTextView.setVisibility(View.VISIBLE);
-                int seasons = details.getNumberOfSeasons();
-                seasonsTextView.setText(getResources().getQuantityString(R.plurals.seasons_count, seasons, seasons));
-
-                Picasso.get().load("https://image.tmdb.org/t/p/w780" + details.getBackdropPath()).into(movieImageView);
-                currentContentEntity = new FavoriteMovieEntity(details.getId(), details.getName(), details.getVoteAverage(), details.getOverview(), details.getPosterPath(), details.getFirstAirDate());
-            }
-        });
-
+    private void setupObservers() {
         viewModel.isFavorite.observe(this, isFavorite -> {
             if (isFavorite != null) {
-                updateButtonState(btnToggleFavorite, isFavorite, R.drawable.ic_favorite_filled, R.drawable.ic_favorite_border);
+                updateButtonState(btnFavorite, isFavorite, R.drawable.ic_favorite_filled, R.drawable.ic_favorite_border);
                 if (wasFavorite != null && !wasFavorite.equals(isFavorite)) {
-                    Toast.makeText(this, isFavorite ? getString(R.string.added_to_favorites) : getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show();
+                    String message = (isFavorite ? getString(R.string.added_to_favorites) : getString(R.string.removed_from_favorites));
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 }
                 wasFavorite = isFavorite;
             }
         });
 
+        viewModel.tvShowDetails.observe(this, details -> {
+            if (details != null) {
+                detailOverview.setText(details.getOverview());
+                detailRating.setText(String.format("%.1f", details.getVoteAverage()));
+                detailTitle.setText(details.getName());
+
+                String firstAirDate = details.getFirstAirDate();
+                if (firstAirDate != null && firstAirDate.length() >= 4) {
+                    detailYear.setText(firstAirDate.substring(0, 4));
+                }
+
+                if (details.getPosterPath() != null) {
+                    Picasso.get().load("https://image.tmdb.org/t/p/w780" + details.getPosterPath()).into(detailPoster);
+                }
+
+                currentTvShowEntity = new FavoriteMovieEntity(
+                        details.getId(),
+                        details.getName(),
+                        details.getVoteAverage(),
+                        details.getOverview(),
+                        details.getPosterPath(),
+                        details.getFirstAirDate()
+                );
+            }
+        });
+
         viewModel.isInWatchlist.observe(this, isInWatchlist -> {
             if (isInWatchlist != null) {
-                updateButtonState(btnToggleWatchlist, isInWatchlist, R.drawable.ic_bookmark, R.drawable.ic_bookmark);
+                updateButtonState(btnWatchlist, isInWatchlist, R.drawable.ic_bookmark, R.drawable.ic_bookmark);
                 if (wasInWatchlist != null && !wasInWatchlist.equals(isInWatchlist)) {
-                    Toast.makeText(this, isInWatchlist ? "Added to watchlist" : "Removed from watchlist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, isInWatchlist ? getString(R.string.added_to_watchlist) : getString(R.string.removed_from_watchlist), Toast.LENGTH_SHORT).show();
                 }
                 wasInWatchlist = isInWatchlist;
             }
         });
 
-        viewModel.tvShowCast.observe(this, cast -> {
-            if (cast != null && !cast.isEmpty()) {
-                castAdapter.setCastList(cast);
-                castTitle.setVisibility(View.VISIBLE);
-                castRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                castTitle.setVisibility(View.GONE);
-                castRecyclerView.setVisibility(View.GONE);
-            }
-        });
-
-        viewModel.watchProviders.observe(this, result -> {
-            if (result != null && result.getProviders() != null && !result.getProviders().isEmpty()) {
-                watchProviderAdapter.setProviderList(result.getProviders());
-                this.watchProviderLink = result.getLink();
-                providersTitle.setVisibility(View.VISIBLE);
-                watchProvidersRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                providersTitle.setVisibility(View.GONE);
-                watchProvidersRecyclerView.setVisibility(View.GONE);
-            }
-        });
-
-        viewModel.trailerUrl.observe(this, url -> {
-            this.trailerUrl = url;
-            btnWatchTrailer.setEnabled(url != null);
-        });
         viewModel.actorDetails.observe(this, actorDetails -> {
             if (actorDetails != null && actorDetailsDialog != null && actorDetailsDialog.isShowing()) {
                 updateActorDetailsDialog(actorDetails);
@@ -206,38 +212,77 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
                 Toast.makeText(this, R.string.actor_details_failed, Toast.LENGTH_SHORT).show();
             }
         });
+
+        viewModel.trailerUrl.observe(this, url -> {
+            this.trailerUrl = url;
+            btnPlayTrailer.setEnabled(url != null);
+        });
+
+        viewModel.tvShowCast.observe(this, cast -> {
+            if (cast != null && !cast.isEmpty()) {
+                castAdapter.setCastList(cast);
+                rvCast.setVisibility(View.VISIBLE);
+            } else {
+                rvCast.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.watchProviders.observe(this, providersResult -> {
+            if (providersResult != null && providersResult.getProviders() != null && !providersResult.getProviders().isEmpty()) {
+                watchProviderAdapter.setProviderList(providersResult.getProviders());
+                this.watchProviderLink = providersResult.getLink();
+            }
+        });
     }
 
     private void setupClickListeners() {
-        btnToggleFavorite.setOnClickListener(v -> viewModel.toggleFavoriteStatus(currentContentEntity));
-        btnToggleWatchlist.setOnClickListener(v -> viewModel.toggleWatchlistStatus(currentContentEntity));
-        btnWatchTrailer.setOnClickListener(v -> {
+        btnFavorite.setOnClickListener(v -> viewModel.toggleFavoriteStatus(currentTvShowEntity));
+        btnWatchlist.setOnClickListener(v -> viewModel.toggleWatchlistStatus(currentTvShowEntity));
+
+        btnPlayTrailer.setOnClickListener(v -> {
             if (mInterstitialAd != null) {
                 mInterstitialAd.show(TvShowDetailActivity.this);
-                // Set a listener to know when the ad is closed.
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                     @Override
                     public void onAdDismissedFullScreenContent() {
-                        // After the ad is dismissed, play the trailer.
                         playTrailer();
+                        loadInterstitialAd();
                     }
                 });
             } else {
-                // If the ad isn't loaded for any reason, play the trailer directly.
                 playTrailer();
             }
         });
+
         fabShare.setOnClickListener(v -> {
-            if (currentContentEntity != null && currentContentEntity.getTitle() != null) {
+            if (currentTvShowEntity != null) {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                String shareText = "Check out this TV Show: " + currentContentEntity.getTitle();
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-                startActivity(Intent.createChooser(shareIntent, "Share TV Show via"));
-            } else {
-                Toast.makeText(this, "Details not loaded yet.", Toast.LENGTH_SHORT).show();
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_tv_show_prefix) + currentTvShowEntity.getTitle());
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)));
             }
         });
+    }
+
+    private void showTrailerInWebViewDialog(String url) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_webview_trailer, null);
+        WebView webView = view.findViewById(R.id.webViewTrailer);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.loadUrl(url);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(dialogInterface -> webView.destroy());
+        dialog.show();
+    }
+
+    private void playTrailer() {
+        if (trailerUrl != null) {
+            showTrailerInWebViewDialog(trailerUrl);
+        } else {
+            Toast.makeText(this, R.string.trailer_not_available, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -254,37 +299,11 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         }
     }
 
-    private void showTrailerInWebViewDialog(String url) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_webview_trailer, null);
-        WebView webView = view.findViewById(R.id.webViewTrailer);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl(url);
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.setOnDismissListener(dialogInterface -> webView.destroy());
-        dialog.show();
-    }
-
-
-
-    private void updateButtonState(MaterialButton button, boolean isActive, int activeIcon, int inactiveIcon) {
-        button.setIconResource(isActive ? activeIcon : inactiveIcon);
-        button.setIconTint(ContextCompat.getColorStateList(this, isActive ? R.color.favorite_icon_tint_active : R.color.favorite_icon_tint_inactive));
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
     private void showActorDetailsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dialog_actor_details, null);
         builder.setView(view);
-        builder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(R.string.dialog_close, (dialog, which) -> dialog.dismiss());
         actorDetailsDialog = builder.create();
         actorDetailsDialog.show();
     }
@@ -293,7 +312,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         View dialogView = actorDetailsDialog.getWindow().getDecorView();
         ProgressBar progressBar = dialogView.findViewById(R.id.actor_details_progress);
         View contentLayout = dialogView.findViewById(R.id.actor_details_layout);
-
         progressBar.setVisibility(View.GONE);
         contentLayout.setVisibility(View.VISIBLE);
 
@@ -303,54 +321,58 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         TextView actorBiography = dialogView.findViewById(R.id.actor_dialog_biography);
 
         actorName.setText(details.getName());
-        String birthInfo = (details.getBirthday() != null ? "Born: " + details.getBirthday() : "") +
-                (details.getPlaceOfBirth() != null ? "\nIn: " + details.getPlaceOfBirth() : "");
+        String birthInfo = (details.getBirthday() != null ? getString(R.string.actor_birth_date) + details.getBirthday() : "") +
+                (details.getPlaceOfBirth() != null ? getString(R.string.actor_birth_place) + details.getPlaceOfBirth() : "");
         actorBirthday.setText(birthInfo);
-        actorBiography.setText(details.getBiography() != null && !details.getBiography().isEmpty() ? details.getBiography() : "No biography available.");
-        String imageUrl = "https://image.tmdb.org/t/p/h632" + details.getProfilePath();
-        Picasso.get().load(imageUrl).into(actorImage);
+        actorBiography.setText(details.getBiography() != null && !details.getBiography().isEmpty() ? details.getBiography() : getString(R.string.actor_no_biography));
+
+        if (details.getProfilePath() != null) {
+            String imageUrl = "https://image.tmdb.org/t/p/h632" + details.getProfilePath();
+            Picasso.get().load(imageUrl).into(actorImage);
+        }
+    }
+
+    private void updateButtonState(MaterialButton button, boolean isActive, int activeIcon, int inactiveIcon) {
+        button.setIconResource(isActive ? activeIcon : inactiveIcon);
+        if (isActive) {
+            button.setIconTint(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+            if (button.getId() == R.id.btn_favorite) {
+                button.setIconTint(ContextCompat.getColorStateList(this, R.color.red));
+                button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.red));
+            } else {
+                button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+            }
+        } else {
+            button.setIconTint(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+            button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+            if (button.getId() == R.id.btn_watchlist) {
+                button.setIconTint(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+                button.setStrokeColor(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadInterstitialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
-        // REMEMBER to replace this with your real Interstitial Ad Unit ID before publishing
-        String adUnitId = "ca-app-pub-6321231117080513/2496825263"; // This is a test ID
-
-        InterstitialAd.load(this, adUnitId, adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        mInterstitialAd = interstitialAd;
-                        // The ad is loaded. Now, decide if we should show it.
-                        maybeShowInterstitialAd();
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        mInterstitialAd = null;
-                    }
-                });
-    }
-    private void maybeShowInterstitialAd() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int detailPageOpenCount = prefs.getInt("detail_page_count", 0);
-
-        // Show the ad every 4th time
-        if ((detailPageOpenCount + 1) % 4 == 0) {
-            if (mInterstitialAd != null) {
-                mInterstitialAd.show(this);
+        String adUnitId = "ca-app-pub-6321231117080513/2496825263";
+        InterstitialAd.load(this, adUnitId, adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                mInterstitialAd = interstitialAd;
             }
-        }
-
-        // Increment and save the counter for the next time
-        prefs.edit().putInt("detail_page_count", detailPageOpenCount + 1).apply();
-    }
-
-    private void playTrailer() {
-        if (trailerUrl != null) {
-            showTrailerInWebViewDialog(trailerUrl);
-        } else {
-            Toast.makeText(this, R.string.trailer_not_available, Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                mInterstitialAd = null;
+            }
+        });
     }
 }

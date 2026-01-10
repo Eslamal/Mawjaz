@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/background_light"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:background="?attr/colorPrimary"
-            app:navigationIcon="?attr/homeAsUpIndicator"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/search" />
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -27,12 +32,31 @@
             android:id="@+id/searchInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            app:boxCornerRadiusBottomEnd="28dp"
+            app:boxCornerRadiusBottomStart="28dp"
+            app:boxCornerRadiusTopEnd="28dp"
+            app:boxCornerRadiusTopStart="28dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#F0F0F0"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/colorPrimary"
+            app:endIconMode="clear_text">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/searchEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/search_hint" />
+                android:layout_height="50dp"
+                android:hint="@string/search_hint"
+                android:padding="0dp"
+                android:textSize="16sp"
+                android:background="@android:color/transparent"
+                android:textColor="?attr/colorOnSurface"
+                android:inputType="text"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
@@ -40,13 +64,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
-            android:paddingEnd="4dp">
+            android:paddingEnd="8dp"
+            android:layout_marginTop="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recent_searches"
-                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"/>
 
@@ -56,21 +83,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/clear_all"
+                android:textColor="@color/red"
                 app:icon="@drawable/ic_delete"
-                app:iconSize="16dp"
+                app:iconTint="@color/red"
+                app:iconSize="18dp"
                 android:layout_alignParentEnd="true"/>
-
         </RelativeLayout>
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:clipToPadding="false">
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_recent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 app:singleLine="true" />
         </HorizontalScrollView>
 
@@ -78,40 +108,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/genre_suggestions"
-            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:clipToPadding="false">
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_genres"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 app:singleLine="true" />
         </HorizontalScrollView>
-
 
         <TextView
             android:id="@+id/text_view_results_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/trending_now"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:visibility="gone"
             tools:visibility="visible"/>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp">
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_view_container"
@@ -133,9 +169,10 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
+                android:paddingHorizontal="8dp"
+                android:paddingBottom="16dp"
                 android:clipToPadding="false"
-                tools:listitem="@layout/item_movie" />
+                tools:listitem="@layout/item_movie_grid" />
 
             <LinearLayout
                 android:id="@+id/emptyStateLayout"
@@ -144,6 +181,20 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="#BDBDBD"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_results_found"
+                    android:textSize="18sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="16dp"/>
             </LinearLayout>
 
         </FrameLayout>

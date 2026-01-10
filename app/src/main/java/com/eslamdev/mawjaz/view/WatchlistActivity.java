@@ -3,7 +3,7 @@ package com.eslamdev.mawjaz.view;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout; // <-- تم التعديل: استيراد LinearLayout
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,9 +26,8 @@ import java.util.concurrent.Executors;
 public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMovieActionListener {
 
     private RecyclerView watchlistRecyclerView;
-    private TextView emptyWatchlistText;
+    private LinearLayout emptyWatchlistText; // <-- تم التعديل: تغيير النوع من TextView لـ LinearLayout
     private MovieAdapter movieAdapter;
-    // --- تمت إضافة هذه المتغيرات كمتغيرات عامة في الكلاس ---
     private WatchlistMovieDao watchlistMovieDao;
     private ExecutorService databaseExecutor;
 
@@ -41,19 +40,22 @@ public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMo
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+            getSupportActionBar().setTitle(getString(R.string.watchlist_title)); // إضافة العنوان
         }
 
         watchlistRecyclerView = findViewById(R.id.watchlistRecyclerView);
-        emptyWatchlistText = findViewById(R.id.emptyWatchlistText);
+        emptyWatchlistText = findViewById(R.id.emptyWatchlistText); // الربط الآن صحيح مع LinearLayout
 
-        // --- تهيئة الـ DAO والـ Executor هنا مرة واحدة ---
+        // تهيئة قاعدة البيانات
         AppDatabase db = AppDatabase.getInstance(getApplicationContext());
         watchlistMovieDao = db.watchlistMovieDao();
         databaseExecutor = Executors.newSingleThreadExecutor();
 
+        // إعداد الأدابتير
+        // تأكد أن هذا الكونستركتور موجود في MovieAdapter، وإلا استخدم new MovieAdapter(this);
         movieAdapter = new MovieAdapter(this, true, R.layout.item_movie_grid);
         movieAdapter.setOnMovieActionListener(this);
+
         watchlistRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         watchlistRecyclerView.setAdapter(movieAdapter);
     }
@@ -97,28 +99,23 @@ public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMo
         return super.onOptionsItemSelected(item);
     }
 
-    // --- هذا هو التعديل الأساسي ---
     @Override
     public void onMovieRemovedFromFavorites(Movie movie) {
-        // 1. إنشاء Entity للفيلم المراد حذفه
         WatchlistMovieEntity movieToDelete = new WatchlistMovieEntity(
                 movie.getId(), movie.getTitle(), movie.getVoteAverage(),
                 movie.getOverview(), movie.getPosterPath(), movie.getReleaseDate()
         );
 
-        // 2. تنفيذ عملية الحذف في الخلفية
         databaseExecutor.execute(() -> {
             watchlistMovieDao.deleteWatchlistMovie(movieToDelete);
-            // 3. بعد الحذف، نطلب إعادة تحميل القائمة على الواجهة الرئيسية
             runOnUiThread(this::loadWatchlistMovies);
         });
 
-        // 4. إظهار رسالة للمستخدم فورًا
-        Toast.makeText(this, movie.getTitle() +getString(R.string.removed_from_watchlist), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, movie.getTitle() + " " + getString(R.string.removed_from_watchlist), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onFavoriteStatusChanged(Movie movie, boolean isFavorite) {
-        // لا نحتاج لعمل أي شيء هنا
+        // لا نحتاج لعمل شيء هنا
     }
 }

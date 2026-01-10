@@ -33,5 +33,6 @@
     <color name="favorite_icon_tint_active">#E91E63</color>
     <color name="favorite_icon_tint_inactive">#8A8A8A</color>
     <color name="shimmer_placeholder">#DDDDDD</color>
+    <color name="cardview_dark_background">#424242</color>
 </resources>
 

@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.eslamdev.mawjaz.BuildConfig;
 import com.eslamdev.mawjaz.R;
 import com.eslamdev.mawjaz.adapter.ContentAdapter;
 import com.eslamdev.mawjaz.database.ContentViewModel;
@@ -92,7 +94,7 @@ public class ContentFragment extends Fragment {
     private void setupViewModel() {
         if (getArguments() != null) {
             showLoading();
-            String apiKey = getString(R.string.api_key);
+            String apiKey = BuildConfig.TMDB_API_KEY;
             String contentType = getArguments().getString("CONTENT_TYPE");
             String category = getArguments().getString("CATEGORY");
             String language = getArguments().getString("LANGUAGE");

@@ -280,4 +280,50 @@ public class MovieRepository {
         });
         return trendingResults;
     }
+
+    // --- ضيف الدوال دي في كلاس MovieRepository ---
+
+    // دالة مساعدة لجلب البيانات للصفحة الرئيسية (Popular Movies)
+    public LiveData<List<ContentItem>> getPopularMoviesHome(String apiKey, String language) {
+        MutableLiveData<List<ContentItem>> data = new MutableLiveData<>();
+        api.getPopularMovies(apiKey, language, 1).enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<ContentItem> items = new ArrayList<>();
+                    for (Movie movie : response.body().getResults()) {
+                        items.add(ContentItem.fromMovie(movie));
+                    }
+                    data.postValue(items);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
+                data.postValue(null);
+            }
+        });
+        return data;
+    }
+
+    // دالة مساعدة لجلب البيانات للصفحة الرئيسية (Top Rated Movies)
+    public LiveData<List<ContentItem>> getTopRatedMoviesHome(String apiKey, String language) {
+        MutableLiveData<List<ContentItem>> data = new MutableLiveData<>();
+        api.getTopRatedMovies(apiKey, language, 1).enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<ContentItem> items = new ArrayList<>();
+                    for (Movie movie : response.body().getResults()) {
+                        items.add(ContentItem.fromMovie(movie));
+                    }
+                    data.postValue(items);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
+                data.postValue(null);
+            }
+        });
+        return data;
+    }
 }

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.eslamdev.mawjaz.BuildConfig;
 import com.eslamdev.mawjaz.R;
 import com.eslamdev.mawjaz.adapter.MovieAdapter;
 import com.eslamdev.mawjaz.database.GenreMoviesViewModel;
@@ -100,7 +101,7 @@ public class GenreMoviesFragment extends Fragment {
 
     private void setupViewModel() {
         showLoading();
-        String apiKey = getString(R.string.api_key);
+        String apiKey = BuildConfig.TMDB_API_KEY;
         // استخدام الـ Factory والـ ViewModel الجديد
         GenreMoviesViewModelFactory factory = new GenreMoviesViewModelFactory(requireActivity().getApplication(), apiKey, genreId);
         movieViewModel = new ViewModelProvider(this, factory).get(GenreMoviesViewModel.class);

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -86,14 +88,29 @@ public class MainActivity extends BaseActivity {
     }
 
     @SuppressLint("MissingSuperCall")
+    // في MainActivity.java
+
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_exit_title)
-                .setMessage(R.string.dialog_exit_message)
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> super.onBackPressed())
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+        // إنشاء الديالوج المخصص
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_exit, null);
+        builder.setView(view);
+
+        // إنشاء الديالوج وتخلي خلفيته شفافة عشان الكيرفات تبان
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // ربط الأزرار
+        view.findViewById(R.id.btnStay).setOnClickListener(v -> dialog.dismiss());
+        view.findViewById(R.id.btnExit).setOnClickListener(v -> {
+            dialog.dismiss();
+            super.onBackPressed(); // الخروج الفعلي
+        });
+
+        dialog.show();
     }
 
     // --- Adapter for ViewPager ---
@@ -107,7 +124,7 @@ public class MainActivity extends BaseActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new MoviesContainerFragment();
+                    return new HomeModernFragment();
                 case 1:
                     return new TvShowsContainerFragment();
                 case 2:
