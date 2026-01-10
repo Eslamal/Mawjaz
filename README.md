@@ -9,10 +9,20 @@ The app follows modern Android development practices, utilizing **MVVM Architect
 ## 📱 Screenshots 
 
 <p align="center">
-  <img src="screenshots/home.png" width="200" alt="Home Screen"/>
-  <img src="screenshots/details.png" width="200" alt="Details Screen"/>
-  <img src="screenshots/search.png" width="200" alt="Search Screen"/>
-  <img src="screenshots/favorites.png" width="200" alt="Favorites Screen"/>
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-34.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-36.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-37.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-38.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-39.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-40.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-41.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-42.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-43.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-44.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-45.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-46.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-47.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-49.jpg?raw=true" width="200" />
 </p>
 
 ---
