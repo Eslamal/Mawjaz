@@ -21,7 +21,7 @@ public class ContentItem {
         this.originalLanguage = originalLanguage;
     }
 
-    // Getters
+
     public int getId() { return id; }
     public String getTitle() { return title; }
     public double getVoteAverage() { return voteAverage; }
@@ -30,10 +30,8 @@ public class ContentItem {
     public String getReleaseDate() { return releaseDate; }
     public String getType() { return type; }
 
-    // --- 1. أضف هذا الـ Getter ---
     public String getOriginalLanguage() { return originalLanguage; }
 
-    // دوال التحويل: تحول الفيلم أو المسلسل إلى هذا العنصر الموحد
     public static ContentItem fromMovie(Movie movie) {
         return new ContentItem(
                 movie.getId(),
@@ -43,7 +41,7 @@ public class ContentItem {
                 movie.getPosterPath(),
                 movie.getReleaseDate(),
                 "movie",
-                movie.getOriginalLanguage() // --- 2. مرر اللغة الأصلية هنا ---
+                movie.getOriginalLanguage()
         );
     }
 
@@ -56,7 +54,7 @@ public class ContentItem {
                 tvShow.getPosterPath(),
                 tvShow.getFirstAirDate(),
                 "tv",
-                tvShow.getOriginalLanguage() // --- 3. مرر اللغة الأصلية هنا ---
+                tvShow.getOriginalLanguage()
         );
     }
 
@@ -64,30 +62,29 @@ public class ContentItem {
     public static ContentItem fromTrendingItem(TrendingItem item) {
         if (item.getMediaType() == null) return null;
 
-        // Check the media_type to decide how to create the ContentItem
         if ("movie".equals(item.getMediaType())) {
             return new ContentItem(
                     item.getId(),
-                    item.getTitle(),       // Use movie title
+                    item.getTitle(),
                     item.getVoteAverage(),
                     item.getOverview(),
                     item.getPosterPath(),
-                    item.getReleaseDate(), // Use movie release date
+                    item.getReleaseDate(),
                     "movie",
                     item.getOriginalLanguage()
             );
         } else if ("tv".equals(item.getMediaType())) {
             return new ContentItem(
                     item.getId(),
-                    item.getName(),          // Use TV show name
+                    item.getName(),
                     item.getVoteAverage(),
                     item.getOverview(),
                     item.getPosterPath(),
-                    item.getFirstAirDate(),  // Use TV show air date
+                    item.getFirstAirDate(),
                     "tv",
                     item.getOriginalLanguage()
             );
         }
-        return null; // In case the type is something else, like "person"
+        return null;
     }
 }

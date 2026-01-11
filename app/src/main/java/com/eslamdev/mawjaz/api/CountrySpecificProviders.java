@@ -7,7 +7,7 @@ public class CountrySpecificProviders {
     @SerializedName("link")
     private String link;
 
-    @SerializedName("flatrate") // الاشتراكات مثل Netflix
+    @SerializedName("flatrate")
     private List<Provider> flatrate;
 
     public String getLink() {

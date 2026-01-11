@@ -77,7 +77,6 @@ public class DetailRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     String youtubeKey = findBestTrailerKey(response.body().getResults());
                     if (youtubeKey != null) {
-                        // الرابط الصحيح لتشغيل الفيديو في WebView
                         trailerUrlLiveData.postValue("https://www.youtube.com/embed/" + youtubeKey);
                     } else {
                         trailerUrlLiveData.postValue(null);
@@ -99,10 +98,10 @@ public class DetailRepository {
         String key = null;
         for (Video video : videos) {
             if ("Trailer".equalsIgnoreCase(video.getType()) && "YouTube".equalsIgnoreCase(video.getSite())) {
-                return video.getKey(); // أفضل اختيار هو التريلر الرسمي
+                return video.getKey();
             }
             if (key == null && "Teaser".equalsIgnoreCase(video.getType()) && "YouTube".equalsIgnoreCase(video.getSite())) {
-                key = video.getKey(); // اختيار بديل لو مفيش تريلر
+                key = video.getKey();
             }
         }
         return key;
@@ -119,11 +118,8 @@ public class DetailRepository {
 
     public LiveData<List<CastMember>> getMovieCast(int movieId, String apiKey, String originalLanguage) {
         MutableLiveData<List<CastMember>> castLiveData = new MutableLiveData<>();
-
-        // Determine the language for the API call
         String languageForApi = "ar".equals(originalLanguage) ? "ar-EG" : "en-US";
 
-        // Use the new getMovieCredits method from the API interface
         tmDbApi.getMovieCredits(movieId, apiKey, languageForApi).enqueue(new Callback<CreditsResponse>() {
             @Override
             public void onResponse(@NonNull Call<CreditsResponse> call, @NonNull Response<CreditsResponse> response) {
@@ -144,10 +140,8 @@ public class DetailRepository {
     public LiveData<TvShowDetails> getTvShowDetails(int tvId, String apiKey, String originalLanguage) {
         MutableLiveData<TvShowDetails> detailsLiveData = new MutableLiveData<>();
 
-        // Determine the language for the API call
         String languageForApi = "ar".equals(originalLanguage) ? "ar-EG" : "en-US";
 
-        // Use the new getTvShowDetails method from the API interface
         tmDbApi.getTvShowDetails(tvId, apiKey, languageForApi).enqueue(new Callback<TvShowDetails>() {
             @Override
             public void onResponse(@NonNull Call<TvShowDetails> call, @NonNull Response<TvShowDetails> response) {
@@ -164,10 +158,8 @@ public class DetailRepository {
     public LiveData<List<CastMember>> getTvShowCast(int tvId, String apiKey, String originalLanguage) {
         MutableLiveData<List<CastMember>> castLiveData = new MutableLiveData<>();
 
-        // Determine the language for the API call
         String languageForApi = "ar".equals(originalLanguage) ? "ar-EG" : "en-US";
 
-        // Use the new getTvShowCredits method from the API interface
         tmDbApi.getTvShowCredits(tvId, apiKey, languageForApi).enqueue(new Callback<CreditsResponse>() {
             @Override
             public void onResponse(@NonNull Call<CreditsResponse> call, @NonNull Response<CreditsResponse> response) {
@@ -238,25 +230,23 @@ public class DetailRepository {
             @Override
             public void onResponse(@NonNull Call<WatchProviderResults> call, @NonNull Response<WatchProviderResults> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResults() != null) {
-                    // سنقوم بجلب المنصات المتاحة في مصر (EG) كمثال
-                    String countryCode = Locale.getDefault().getCountry(); // مثلًا: "EG" لمصر، "SA" للسعودية، "US" لأمريكا
+                    String countryCode = Locale.getDefault().getCountry();
                     CountrySpecificProviders providersForCountry = response.body().getResults().get(countryCode);
 
                     if (providersForCountry != null) {
                         List<Provider> flatrateProviders = providersForCountry.getFlatrate() != null ? providersForCountry.getFlatrate() : new ArrayList<>();
                         resultLiveData.postValue(new WatchProvidersResult(flatrateProviders, providersForCountry.getLink()));
                     } else {
-                        // إذا لم نجد بيانات للبلد المحدد، نرسل نتيجة فارغة
                         resultLiveData.postValue(new WatchProvidersResult(new ArrayList<>(), null));
                     }
                 } else {
-                    resultLiveData.postValue(null); // في حالة حدوث خطأ
+                    resultLiveData.postValue(null);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<WatchProviderResults> call, @NonNull Throwable t) {
-                resultLiveData.postValue(null); // في حالة فشل الاتصال
+                resultLiveData.postValue(null);
             }
         });
 

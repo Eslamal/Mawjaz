@@ -1,20 +1,18 @@
-// File: com/example/listmovies/api/Video.java
 package com.eslamdev.mawjaz.api;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Video {
     @SerializedName("id")
-    private String id; // The ID of the video itself, not the movie
+    private String id;
     private String iso_639_1;
     private String iso_3166_1;
-    private String key; // This is the YouTube video key
+    private String key;
     private String name;
-    private String site; // e.g., "YouTube"
+    private String site;
     private int size;
-    private String type; // e.g., "Trailer", "Teaser", "Clip"
+    private String type;
 
-    // Constructor (Optional, if you only deserialize)
     public Video(String id, String iso_639_1, String iso_3166_1, String key, String name, String site, int size, String type) {
         this.id = id;
         this.iso_639_1 = iso_639_1;
@@ -26,7 +24,7 @@ public class Video {
         this.type = type;
     }
 
-    // Getters
+
     public String getId() {
         return id;
     }
@@ -59,7 +57,7 @@ public class Video {
         return type;
     }
 
-    // Setters (Optional, if you only deserialize)
+
     public void setId(String id) {
         this.id = id;
     }

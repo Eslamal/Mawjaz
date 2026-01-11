@@ -7,7 +7,6 @@ import retrofit2.http.Query;
 
 public interface TMDbApi {
 
-    // --- Movie Endpoints ---
     @GET("movie/popular")
     Call<MovieResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("language") String language, @Query("page") int page);
 
@@ -32,7 +31,6 @@ public interface TMDbApi {
     Call<WatchProviderResults> getWatchProviders(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
 
 
-    // --- TV Show Endpoints ---
     @GET("tv/popular")
     Call<TvShowResponse> getPopularTvShows(@Query("api_key") String apiKey, @Query("language") String language, @Query("page") int page);
 
@@ -60,7 +58,6 @@ public interface TMDbApi {
     Call<WatchProviderResults> getTvShowWatchProviders(@Path("tv_id") int tvId, @Query("api_key") String apiKey);
 
 
-    // --- Other Endpoints ---
     @GET("search/movie")
     Call<MovieResponse> searchMovies(@Query("api_key") String apiKey, @Query("query") String query, @Query("language") String language);
     @GET("search/tv")
@@ -103,7 +100,7 @@ public interface TMDbApi {
     );
 
     @GET("trending/all/day")
-    Call<ContentResponse> getTrending( // We can reuse ContentResponse if it's similar to MovieResponse/TvShowResponse
+    Call<ContentResponse> getTrending(
                                        @Query("api_key") String apiKey,
                                        @Query("language") String language
     );

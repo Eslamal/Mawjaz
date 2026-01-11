@@ -26,7 +26,6 @@ public class GenreMoviesActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null && genreId != -1) {
-            // إنشاء وإضافة الـ Fragment الذي سيعرض قائمة الأفلام
             GenreMoviesFragment fragment = GenreMoviesFragment.newInstance(genreId);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

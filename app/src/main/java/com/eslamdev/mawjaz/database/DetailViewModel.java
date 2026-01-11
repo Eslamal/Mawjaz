@@ -17,7 +17,6 @@ public class DetailViewModel extends AndroidViewModel {
 
     private final DetailRepository repository;
     private final String apiKey;
-    // 1. ADD THIS VARIABLE
     private final String originalLanguage;
 
     public final LiveData<Boolean> isFavorite;
@@ -30,22 +29,20 @@ public class DetailViewModel extends AndroidViewModel {
     private final MutableLiveData<Integer> actorIdTrigger = new MutableLiveData<>();
     public final LiveData<ActorDetails> actorDetails;
 
-    // 2. MODIFY THE CONSTRUCTOR TO ACCEPT originalLanguage
     public DetailViewModel(@NonNull Application application, int movieId, String apiKey, String originalLanguage) {
         super(application);
         this.repository = new DetailRepository(application);
         this.apiKey = apiKey;
-        this.originalLanguage = originalLanguage; // ASSIGN THE NEW VARIABLE
+        this.originalLanguage = originalLanguage;
         this.movieDetails = repository.getMovieDetails(movieId, apiKey, this.originalLanguage);
 
 
-        // Initialize LiveData
         this.isFavorite = repository.isFavorite(movieId);
         this.isInWatchlist = repository.isMovieInWatchlist(movieId);
         this.watchProviders = repository.getWatchProviders(movieId, apiKey);
         this.trailerUrl = repository.getTrailerUrl(movieId, apiKey);
 
-        // 3. PASS THE originalLanguage to the repository method
+
         this.movieCast = repository.getMovieCast(movieId, apiKey, this.originalLanguage);
 
         this.actorDetails = Transformations.switchMap(actorIdTrigger, id ->

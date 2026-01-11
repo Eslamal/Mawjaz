@@ -18,7 +18,7 @@ public class ActorDetails {
     @SerializedName("profile_path")
     private String profilePath;
 
-    // Getters
+
     public String getName() { return name; }
     public String getBiography() { return biography; }
     public String getBirthday() { return birthday; }

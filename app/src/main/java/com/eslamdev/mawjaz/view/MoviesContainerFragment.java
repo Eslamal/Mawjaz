@@ -29,7 +29,6 @@ public class MoviesContainerFragment extends Fragment {
         new TabLayoutMediator(subTabLayout, subViewPager, (tab, position) -> {
             switch (position) {
                 case 0:
-                    // Use getString() to get the translated text
                     tab.setText(getString(R.string.category_top_rated));
                     break;
                 case 1:
@@ -54,10 +53,8 @@ public class MoviesContainerFragment extends Fragment {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    // Add null as the 4th parameter for countryCode
                     return ContentFragment.newInstance("movie", "top_rated", "en-US", null);
                 case 1:
-                    // Add null as the 4th parameter for countryCode
                     return ContentFragment.newInstance("movie", "popular", "en-US", null);
                 case 2:
                     return new GenresFragment();

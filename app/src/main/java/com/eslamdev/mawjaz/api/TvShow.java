@@ -23,7 +23,6 @@ public class TvShow {
     @SerializedName("original_language")
     private String originalLanguage;
 
-    // Getters
     public int getId() { return id; }
     public String getName() { return name; }
     public double getVoteAverage() { return voteAverage; }

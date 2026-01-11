@@ -40,7 +40,6 @@ import java.util.List;
 
 public class SearchActivity extends BaseActivity {
 
-    // UI Components
     private TextInputEditText searchEditText;
     private TextInputLayout searchInputLayout;
     private RecyclerView recyclerView;
@@ -49,17 +48,14 @@ public class SearchActivity extends BaseActivity {
     private View emptyStateLayout;
     private TextView resultsTitleTextView;
 
-    // Chips & Headers
     private ChipGroup chipGroupGenres;
     private ChipGroup chipGroupRecent;
     private View recentSearchesHeader;
     private MaterialButton btnClearHistory;
 
-    // ViewModels
     private SearchViewModel searchViewModel;
     private GenresViewModel genresViewModel;
 
-    // Data for History
     private static final String PREFS_SEARCH = "search_prefs";
     private static final String KEY_RECENT_SEARCHES = "recent_searches_list";
 
@@ -73,7 +69,7 @@ public class SearchActivity extends BaseActivity {
         setupRecyclerView();
         setupViewModels();
         setupSearchInput();
-        loadRecentSearches(); // تحميل سجل البحث
+        loadRecentSearches();
     }
 
     private void initViews() {
@@ -103,18 +99,15 @@ public class SearchActivity extends BaseActivity {
 
     private void setupRecyclerView() {
         contentAdapter = new ContentAdapter(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // عرض شبكي (Grid)
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(contentAdapter);
     }
 
     private void setupViewModels() {
         String apiKey = BuildConfig.TMDB_API_KEY;
-
-        // 1. إعداد Search ViewModel
         SearchViewModelFactory factory = new SearchViewModelFactory(getApplication(), apiKey);
         searchViewModel = new ViewModelProvider(this, factory).get(SearchViewModel.class);
 
-        // مراقبة نتائج البحث
         searchViewModel.results.observe(this, items -> {
             if (items == null) {
                 showEmptyState();
@@ -125,7 +118,6 @@ public class SearchActivity extends BaseActivity {
             }
         });
 
-        // 2. إعداد Genres ViewModel لجلب الأنواع
         genresViewModel = new ViewModelProvider(this).get(GenresViewModel.class);
         genresViewModel.getGenres().observe(this, genres -> {
             if (genres != null) {
@@ -135,7 +127,6 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void setupSearchInput() {
-        // الاستماع لزر "بحث" في لوحة المفاتيح
         searchEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performSearch(searchEditText.getText().toString());
@@ -144,13 +135,11 @@ public class SearchActivity extends BaseActivity {
             return false;
         });
 
-        // زر المسح (X) داخل خانة البحث
         searchInputLayout.setEndIconOnClickListener(v -> {
             searchEditText.setText("");
-            showRecentSearchesState(); // العودة لحالة السجل عند المسح
+            showRecentSearchesState();
         });
 
-        // مراقبة الكتابة
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -168,26 +157,17 @@ public class SearchActivity extends BaseActivity {
     private void performSearch(String query) {
         if (query == null || query.trim().isEmpty()) return;
 
-        // 1. إخفاء الكيبورد
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
 
-        // 2. تحديث الواجهة
         showLoading();
         resultsTitleTextView.setText(R.string.search_results_title);
         resultsTitleTextView.setVisibility(View.VISIBLE);
 
-        // إخفاء الاقتراحات والسجل أثناء البحث
         hideHistoryAndGenres();
-
-        // 3. حفظ في السجل
         saveToHistory(query);
-
-        // 4. تنفيذ البحث
         searchViewModel.setSearchQuery(query);
     }
-
-    // --- التحكم في حالات الواجهة ---
 
     private void showLoading() {
         shimmerFrameLayout.setVisibility(View.VISIBLE);
@@ -201,7 +181,7 @@ public class SearchActivity extends BaseActivity {
         shimmerFrameLayout.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
         emptyStateLayout.setVisibility(View.GONE);
-        contentAdapter.setItems(items); // تأكد أن ContentAdapter يحتوي على دالة setItems
+        contentAdapter.setItems(items);
     }
 
     private void showEmptyState() {
@@ -212,21 +192,15 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void showRecentSearchesState() {
-        // إعادة تهيئة الواجهة لعرض السجل والاقتراحات
         recyclerView.setVisibility(View.GONE);
         emptyStateLayout.setVisibility(View.GONE);
         shimmerFrameLayout.setVisibility(View.GONE);
         resultsTitleTextView.setVisibility(View.GONE);
 
-        loadRecentSearches(); // تحديث السجل
+        loadRecentSearches();
 
-        // إظهار العناوين والـ Chips
-        View genreScroll = (View) chipGroupGenres.getParent(); // الـ ScrollView الأب
+        View genreScroll = (View) chipGroupGenres.getParent();
         if (genreScroll != null) genreScroll.setVisibility(View.VISIBLE);
-
-        // إظهار عنوان "اقتراحات الأنواع"
-        // (نبحث عن الـ TextView اللي قبل الـ ScrollView مباشرة في الـ LinearLayout)
-        // الحل الأبسط: نتأكد من الـ Visibility في loadRecentSearches و populateGenreChips
     }
 
     private void hideHistoryAndGenres() {
@@ -236,11 +210,8 @@ public class SearchActivity extends BaseActivity {
         View genreScroll = (View) chipGroupGenres.getParent();
         if (genreScroll != null) genreScroll.setVisibility(View.GONE);
 
-        // إخفاء عنوان "اقتراحات الأنواع" صعب الوصول له برمجيا بدون ID مباشر
-        // لذا سنعتمد على إخفاء الـ Parent ScrollView كما فعلنا
     }
 
-    // --- منطق الـ Chips ---
 
     private void populateGenreChips(List<Genre> genres) {
         chipGroupGenres.removeAllViews();
@@ -256,37 +227,29 @@ public class SearchActivity extends BaseActivity {
             chipGroupGenres.addView(chip);
         }
 
-        // التأكد من أن القسم ظاهر لو في بيانات
         View genreScroll = (View) chipGroupGenres.getParent();
         if (genreScroll != null && !genres.isEmpty() && searchEditText.getText().length() == 0) {
             genreScroll.setVisibility(View.VISIBLE);
         }
     }
 
-    // --- منطق سجل البحث (SharedPreferences) ---
-
     private void saveToHistory(String query) {
         SharedPreferences prefs = getSharedPreferences(PREFS_SEARCH, MODE_PRIVATE);
         String history = prefs.getString(KEY_RECENT_SEARCHES, "");
 
-        // تحويل السلسلة لقائمة لتجنب التكرار ولإضافة الجديد في الأول
         List<String> historyList = new ArrayList<>(Arrays.asList(history.split(",")));
 
-        // تنظيف القائمة (إزالة الفراغات والعنصر المكرر إذا وجد)
-        historyList.remove(""); // إزالة أي عناصر فارغة
+        historyList.remove("");
         if (historyList.contains(query)) {
             historyList.remove(query);
         }
 
-        // إضافة البحث الجديد في المقدمة
         historyList.add(0, query);
 
-        // الاحتفاظ بآخر 10 عمليات بحث فقط
         if (historyList.size() > 10) {
             historyList = historyList.subList(0, 10);
         }
 
-        // الحفظ مرة أخرى
         String newHistory = TextUtils.join(",", historyList);
         prefs.edit().putString(KEY_RECENT_SEARCHES, newHistory).apply();
     }
@@ -300,7 +263,6 @@ public class SearchActivity extends BaseActivity {
             recentSearchesHeader.setVisibility(View.GONE);
             chipGroupRecent.setVisibility(View.GONE);
         } else {
-            // فقط أظهر السجل لو مربع البحث فاضي
             if (searchEditText.getText().length() == 0) {
                 recentSearchesHeader.setVisibility(View.VISIBLE);
                 chipGroupRecent.setVisibility(View.VISIBLE);

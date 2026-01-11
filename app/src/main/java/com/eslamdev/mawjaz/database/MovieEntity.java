@@ -12,7 +12,7 @@ public class MovieEntity {
     private String overview;
     private String posterPath;
     private String releaseDate;
-    private String category; // To distinguish between popular and top_rated movies
+    private String category;
 
     public MovieEntity(int id, String title, double voteAverage, String overview, String posterPath, String releaseDate, String category) {
         this.id = id;

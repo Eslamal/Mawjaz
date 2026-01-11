@@ -11,21 +11,21 @@ import java.util.List;
 
 @Dao
 public interface FavoriteMovieDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // إذا كان الفيلم موجودًا، قم باستبداله (مفيد عند تحديث بيانات الفيلم)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavoriteMovie(FavoriteMovieEntity movie);
 
     @Delete
     void deleteFavoriteMovie(FavoriteMovieEntity movie);
 
-    @Query("SELECT * FROM favorite_movies") // جلب جميع الأفلام المفضلة
+    @Query("SELECT * FROM favorite_movies")
     List<FavoriteMovieEntity> getAllFavoriteMovies();
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorite_movies WHERE id = :movieId LIMIT 1)") // التحقق مما إذا كان الفيلم مفضلاً
+    @Query("SELECT EXISTS(SELECT 1 FROM favorite_movies WHERE id = :movieId LIMIT 1)")
     boolean isMovieFavorite(int movieId);
 
     @Query("SELECT EXISTS(SELECT 1 FROM favorite_movies WHERE id = :movieId LIMIT 1)")
     LiveData<Boolean> isFavoriteLiveData(int movieId);
 
-    @Query("SELECT * FROM favorite_movies WHERE id = :movieId LIMIT 1") // جلب فيلم مفضل بواسطة الـ ID
+    @Query("SELECT * FROM favorite_movies WHERE id = :movieId LIMIT 1")
     FavoriteMovieEntity getFavoriteMovieById(int movieId);
 }

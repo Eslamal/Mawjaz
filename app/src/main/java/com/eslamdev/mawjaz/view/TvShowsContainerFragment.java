@@ -50,10 +50,8 @@ public class TvShowsContainerFragment extends Fragment {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    // Add null as the 4th parameter for countryCode
                     return ContentFragment.newInstance("tv", "popular", "en-US", null);
                 case 1:
-                    // Add null as the 4th parameter for countryCode
                     return ContentFragment.newInstance("tv", "top_rated", "en-US", null);
                 default:
                     return ContentFragment.newInstance("tv", "popular", "en-US", null);

@@ -77,23 +77,19 @@ public class HomeModernFragment extends Fragment {
         repository = new MovieRepository(requireActivity().getApplication());
         String apiKey = BuildConfig.TMDB_API_KEY;
         String lang = LocalHelper.getPersistedLanguage(requireContext());
-        if ("system".equals(lang)) lang = "en-US"; // Fallback simple
+        if ("system".equals(lang)) lang = "en-US";
 
-        // 1. Fetch Trending (For the list AND the Featured Movie)
         repository.fetchTrending(apiKey, lang).observe(getViewLifecycleOwner(), items -> {
             if (items != null && !items.isEmpty()) {
                 trendingAdapter.setItems(items);
-                // اختر فيلم عشوائي من التريند ليكون هو الفيلم المميز
                 setupFeaturedMovie(items.get(new Random().nextInt(Math.min(items.size(), 5))));
             }
         });
 
-        // 2. Fetch Popular
         repository.getPopularMoviesHome(apiKey, lang).observe(getViewLifecycleOwner(), items -> {
             if (items != null) popularAdapter.setItems(items);
         });
 
-        // 3. Fetch Top Rated
         repository.getTopRatedMoviesHome(apiKey, lang).observe(getViewLifecycleOwner(), items -> {
             if (items != null) topRatedAdapter.setItems(items);
         });
@@ -101,11 +97,11 @@ public class HomeModernFragment extends Fragment {
 
     private void setupFeaturedMovie(ContentItem item) {
         featuredTitle.setText(item.getTitle());
-        featuredGenre.setText(item.getReleaseDate()); // ممكن نستبدلها بالنوع لاحقاً
+        featuredGenre.setText(item.getReleaseDate());
 
         if (item.getPosterPath() != null) {
             Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w780" + item.getPosterPath()) // جودة أعلى للغلاف الكبير
+                    .load("https://image.tmdb.org/t/p/w780" + item.getPosterPath())
                     .into(featuredPoster);
         }
 

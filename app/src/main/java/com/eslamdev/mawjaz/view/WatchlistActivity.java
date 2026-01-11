@@ -3,7 +3,7 @@ package com.eslamdev.mawjaz.view;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout; // <-- تم التعديل: استيراد LinearLayout
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMovieActionListener {
 
     private RecyclerView watchlistRecyclerView;
-    private LinearLayout emptyWatchlistText; // <-- تم التعديل: تغيير النوع من TextView لـ LinearLayout
+    private LinearLayout emptyWatchlistText;
     private MovieAdapter movieAdapter;
     private WatchlistMovieDao watchlistMovieDao;
     private ExecutorService databaseExecutor;
@@ -40,19 +40,16 @@ public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMo
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getString(R.string.watchlist_title)); // إضافة العنوان
+            getSupportActionBar().setTitle(getString(R.string.watchlist_title));
         }
 
         watchlistRecyclerView = findViewById(R.id.watchlistRecyclerView);
-        emptyWatchlistText = findViewById(R.id.emptyWatchlistText); // الربط الآن صحيح مع LinearLayout
+        emptyWatchlistText = findViewById(R.id.emptyWatchlistText);
 
-        // تهيئة قاعدة البيانات
         AppDatabase db = AppDatabase.getInstance(getApplicationContext());
         watchlistMovieDao = db.watchlistMovieDao();
         databaseExecutor = Executors.newSingleThreadExecutor();
 
-        // إعداد الأدابتير
-        // تأكد أن هذا الكونستركتور موجود في MovieAdapter، وإلا استخدم new MovieAdapter(this);
         movieAdapter = new MovieAdapter(this, true, R.layout.item_movie_grid);
         movieAdapter.setOnMovieActionListener(this);
 
@@ -116,6 +113,6 @@ public class WatchlistActivity extends BaseActivity implements MovieAdapter.OnMo
 
     @Override
     public void onFavoriteStatusChanged(Movie movie, boolean isFavorite) {
-        // لا نحتاج لعمل شيء هنا
+
     }
 }

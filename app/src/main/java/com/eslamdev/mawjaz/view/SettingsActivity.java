@@ -12,7 +12,7 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings); // Layout بسيط يحتوي على FrameLayout
+        setContentView(R.layout.activity_settings);
 
         Toolbar toolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
@@ -26,14 +26,12 @@ public class SettingsActivity extends BaseActivity {
                     .replace(R.id.settings_container, new SettingsFragment())
                     .commit();
         }
-        // أضف Toolbar هنا إذا أردت
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // This handles the click on the back arrow (Up button)
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed(); // Go back to the previous screen
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

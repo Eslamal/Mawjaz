@@ -24,7 +24,7 @@ import com.google.android.material.button.MaterialButton;
 
 public class GenreMoviesFragment extends Fragment {
 
-    private GenreMoviesViewModel movieViewModel; // تغيير النوع
+    private GenreMoviesViewModel movieViewModel;
     private int genreId;
 
     private RecyclerView recyclerView;
@@ -36,7 +36,6 @@ public class GenreMoviesFragment extends Fragment {
     private TextView errorTextView;
     private LinearLayoutManager layoutManager;
 
-    // دالة جديدة لإنشاء الـ Fragment مع تمرير الـ ID
     public static GenreMoviesFragment newInstance(int genreId) {
         GenreMoviesFragment fragment = new GenreMoviesFragment();
         Bundle args = new Bundle();
@@ -56,7 +55,6 @@ public class GenreMoviesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // استخدم layout موحد للـ fragments التي تعرض قوائم
         View view = inflater.inflate(R.layout.fragment_top_rated, container, false);
 
         initializeViews(view);
@@ -102,7 +100,6 @@ public class GenreMoviesFragment extends Fragment {
     private void setupViewModel() {
         showLoading();
         String apiKey = BuildConfig.TMDB_API_KEY;
-        // استخدام الـ Factory والـ ViewModel الجديد
         GenreMoviesViewModelFactory factory = new GenreMoviesViewModelFactory(requireActivity().getApplication(), apiKey, genreId);
         movieViewModel = new ViewModelProvider(this, factory).get(GenreMoviesViewModel.class);
     }
@@ -122,7 +119,7 @@ public class GenreMoviesFragment extends Fragment {
         });
 
         movieViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            // (اختياري) يمكنك إضافة منطق هنا لإظهار ProgressBar في آخر القائمة
+
         });
     }
 
@@ -164,7 +161,7 @@ public class GenreMoviesFragment extends Fragment {
         errorStateLayout.setVisibility(View.GONE);
         TextView emptyText = emptyStateLayout.findViewById(R.id.emptyStateText);
         if (emptyText != null) {
-            emptyText.setText(R.string.no_movies_in_genre); // رسالة عامة
+            emptyText.setText(R.string.no_movies_in_genre);
         }
     }
 

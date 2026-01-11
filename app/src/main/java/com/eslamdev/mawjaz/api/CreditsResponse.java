@@ -7,6 +7,5 @@ public class CreditsResponse {
     @SerializedName("cast")
     private List<CastMember> cast;
 
-    // Getter
     public List<CastMember> getCast() { return cast; }
 }

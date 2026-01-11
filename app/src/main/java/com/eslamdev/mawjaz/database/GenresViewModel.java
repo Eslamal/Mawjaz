@@ -34,16 +34,14 @@ public class GenresViewModel extends AndroidViewModel {
 
     private void loadGenres() {
         isLoading.setValue(true);
-        // استبدل "YOUR_API_KEY" بمفتاح الـ API الفعلي من strings.xml
         String apiKey = "6f02d05e6bdd3ccc3c5856f543ed736e";
         String currentLanguageCode = LocalHelper.getPersistedLanguage(getApplication());
 
-        // 2. If the setting is "system", get the actual device language
+
         if (currentLanguageCode.equals("system")) {
             currentLanguageCode = Resources.getSystem().getConfiguration().getLocales().get(0).getLanguage();
         }
 
-        // 3. Use the dynamic language code for the API call
         repository.fetchGenres(apiKey, currentLanguageCode, new GenresRepository.OnGenresFetchedListener() {
             @Override
             public void onSuccess(List<Genre> genreList) {

@@ -1,4 +1,3 @@
-// File: com/example/listmovies/api/VideoResponse.java
 package com.eslamdev.mawjaz.api;
 
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +5,7 @@ import java.util.List;
 
 public class VideoResponse {
     @SerializedName("id")
-    private int id; // Movie ID
+    private int id;
     @SerializedName("results")
     private List<Video> results;
 

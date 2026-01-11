@@ -18,9 +18,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     private final Context context;
     private List<CastMember> castList = new ArrayList<>();
-    private OnCastMemberClickListener listener; // --- 1. متغير لتخزين الـ Listener ---
+    private OnCastMemberClickListener listener;
 
-    // --- 2. تعريف الـ Interface ---
+
     public interface OnCastMemberClickListener {
         void onCastMemberClick(int actorId);
     }
@@ -28,7 +28,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
     public void setOnCastMemberClickListener(OnCastMemberClickListener listener) {
         this.listener = listener;
     }
-    // --- نهاية الجزء الجديد ---
+
 
     public CastAdapter(Context context) {
         this.context = context;
@@ -55,10 +55,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
         String imageUrl = "https://image.tmdb.org/t/p/w185" + castMember.getProfilePath();
         Picasso.get().load(imageUrl).placeholder(R.drawable.ic_launcher_background).into(holder.actorImage);
 
-        // --- 3. تفعيل الـ OnClickListener على العنصر ---
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                // عند الضغط، نقوم بإرسال الـ ID الخاص بالممثل إلى الـ Activity
+
                 listener.onCastMemberClick(castMember.getId());
             }
         });
@@ -66,7 +65,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
 
     @Override
     public int getItemCount() {
-        // لتجنب الأخطاء، تحقق دائمًا من أن القائمة ليست null
+
         return castList != null ? castList.size() : 0;
     }
 

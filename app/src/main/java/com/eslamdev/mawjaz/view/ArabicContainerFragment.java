@@ -23,11 +23,9 @@ public class ArabicContainerFragment extends Fragment {
         TabLayout subTabLayout = view.findViewById(R.id.sub_tab_layout);
         ViewPager2 subViewPager = view.findViewById(R.id.sub_view_pager);
 
-        // This is the main adapter for the "Arabic" section
         ArabicPagerAdapter adapter = new ArabicPagerAdapter(requireActivity());
         subViewPager.setAdapter(adapter);
 
-        // Setup the main tabs: "Arabic Movies" and "Arabic TV Shows"
         new TabLayoutMediator(subTabLayout, subViewPager, (tab, position) -> {
             switch (position) {
                 case 0:
@@ -42,7 +40,6 @@ public class ArabicContainerFragment extends Fragment {
         return view;
     }
 
-    // This adapter creates the fragments that will hold the sub-tabs
     private static class ArabicPagerAdapter extends FragmentStateAdapter {
         public ArabicPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);
@@ -53,10 +50,8 @@ public class ArabicContainerFragment extends Fragment {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    // The first tab shows the container for Arabic movies
                     return new ArabicMoviesContainerFragment();
                 case 1:
-                    // The second tab shows the container for Arabic TV shows
                     return new ArabicTvShowsContainerFragment();
                 default:
                     return new ArabicMoviesContainerFragment();

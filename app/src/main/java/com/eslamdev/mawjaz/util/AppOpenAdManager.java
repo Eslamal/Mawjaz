@@ -1,4 +1,4 @@
-package com.eslamdev.mawjaz.util; // Or your preferred package for utilities
+package com.eslamdev.mawjaz.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 public class AppOpenAdManager {
 
     private static final String LOG_TAG = "AppOpenAdManager";
-    // Replace this with your REAL App Open Ad Unit ID from AdMob
-    private static final String AD_UNIT_ID = "ca-app-pub-6321231117080513/3427813307"; // This is a test ID
+    private static final String AD_UNIT_ID = "ca-app-pub-6321231117080513/3427813307";
 
     private AppOpenAd appOpenAd = null;
     private boolean isLoadingAd = false;

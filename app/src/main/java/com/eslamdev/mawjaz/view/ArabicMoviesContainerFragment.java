@@ -1,4 +1,3 @@
-// أنشئ ملف Java جديد بهذا الاسم
 package com.eslamdev.mawjaz.view;
 
 import android.os.Bundle;
@@ -30,7 +29,6 @@ public class ArabicMoviesContainerFragment extends Fragment {
     private static class PagerAdapter extends FragmentStateAdapter {
         public PagerAdapter(@NonNull FragmentActivity fa) { super(fa); }
         @NonNull @Override public Fragment createFragment(int pos) {
-            // EG = مصر, SA = السعودية (كمثال للخليج)
             return ContentFragment.newInstance("movie", "discover", null, pos == 0 ? "EG" : "SA");
         }
         @Override public int getItemCount() { return 2; }

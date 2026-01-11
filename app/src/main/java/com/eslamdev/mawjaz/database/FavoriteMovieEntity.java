@@ -1,21 +1,19 @@
-
-
 package com.eslamdev.mawjaz.database;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "favorite_movies") // اسم الجدول الجديد
+@Entity(tableName = "favorite_movies")
 public class FavoriteMovieEntity {
     @PrimaryKey
-    private int id; // معرف الفيلم سيكون المفتاح الأساسي
+    private int id;
     private String title;
     private double voteAverage;
     private String overview;
     private String posterPath;
     private String releaseDate;
 
-    // Constructor
+
     public FavoriteMovieEntity(int id, String title, double voteAverage, String overview, String posterPath, String releaseDate) {
         this.id = id;
         this.title = title;
@@ -25,7 +23,6 @@ public class FavoriteMovieEntity {
         this.releaseDate = releaseDate;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getTitle() { return title; }

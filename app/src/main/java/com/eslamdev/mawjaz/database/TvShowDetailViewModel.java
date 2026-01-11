@@ -24,7 +24,6 @@ public class TvShowDetailViewModel extends AndroidViewModel {
     public final LiveData<List<CastMember>> tvShowCast;
     public final LiveData<WatchProvidersResult> watchProviders;
 
-    // --- تمت إضافة هذه الأسطر ---
     public final LiveData<Boolean> isFavorite;
     public final LiveData<Boolean> isInWatchlist;
 
@@ -43,7 +42,6 @@ public class TvShowDetailViewModel extends AndroidViewModel {
         this.trailerUrl = repository.getTvShowTrailerUrl(tvId, apiKey);
         this.watchProviders = repository.getTvShowWatchProviders(tvId, apiKey);
 
-        // --- تمت إضافة هذه الأسطر ---
         this.isFavorite = repository.isFavorite(tvId);
         this.isInWatchlist = repository.isMovieInWatchlist(tvId);
         this.actorDetails = Transformations.switchMap(actorIdTrigger, id ->
@@ -51,7 +49,6 @@ public class TvShowDetailViewModel extends AndroidViewModel {
         );
     }
 
-    // --- تمت إضافة هذه الدوال ---
     public void toggleFavoriteStatus(FavoriteMovieEntity movie) {
         repository.toggleFavoriteStatus(movie);
     }

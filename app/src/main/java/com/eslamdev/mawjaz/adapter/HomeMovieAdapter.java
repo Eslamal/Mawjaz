@@ -27,7 +27,6 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Home
     }
 
     public void setItems(List<ContentItem> newItems) {
-        // بناخد أول 10 أفلام بس عشان الصفحة الرئيسية متكونش تقيلة
         if (newItems != null && newItems.size() > 10) {
             this.items = newItems.subList(0, 10);
         } else {
@@ -50,7 +49,6 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Home
         holder.title.setText(item.getTitle());
         holder.rating.setText(String.format("%.1f", item.getVoteAverage()));
 
-        // معالجة التاريخ (بناخد السنة فقط)
         String date = item.getReleaseDate();
         if (date != null && date.length() >= 4) {
             holder.releaseYear.setText(date.substring(0, 4));
@@ -58,7 +56,6 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Home
             holder.releaseYear.setText("");
         }
 
-        // تحميل الصورة
         if (item.getPosterPath() != null) {
             Picasso.get()
                     .load("https://image.tmdb.org/t/p/w342" + item.getPosterPath())
@@ -66,7 +63,6 @@ public class HomeMovieAdapter extends RecyclerView.Adapter<HomeMovieAdapter.Home
                     .into(holder.poster);
         }
 
-        // عند الضغط على الكارت
         holder.itemView.setOnClickListener(v -> {
             Intent intent;
             if ("tv".equals(item.getType())) {

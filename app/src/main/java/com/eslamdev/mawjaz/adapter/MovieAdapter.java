@@ -115,8 +115,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             intent.putExtra("title", movie.getTitle());
             intent.putExtra("image_url", "https://image.tmdb.org/t/p/w500" + movie.getPosterPath());
 
-            // --- THIS IS THE ONLY CHANGE ---
-            // Pass the original language to the detail screen
             intent.putExtra("original_language", movie.getOriginalLanguage());
 
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -158,10 +156,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             });
         }
 
-        // --- هذا هو التعديل الأساسي ---
         if (holder.deleteButton != null) {
             holder.deleteButton.setOnClickListener(v -> {
-                // الـ Adapter لم يعد يحذف مباشرة. هو فقط يبلغ الـ Activity.
                 if (movieActionListener != null) {
                     movieActionListener.onMovieRemovedFromFavorites(movie);
                 }

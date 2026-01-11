@@ -63,7 +63,6 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
             intent.putExtra("title", tvShow.getName());
             intent.putExtra("image_url", "https://image.tmdb.org/t/p/w500" + tvShow.getPosterPath());
 
-            // Pass the original language to the detail screen
             intent.putExtra("original_language", tvShow.getOriginalLanguage());
 
             context.startActivity(intent);

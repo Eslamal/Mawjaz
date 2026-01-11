@@ -44,7 +44,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
     private TvShowDetailViewModel viewModel;
     private InterstitialAd mInterstitialAd;
 
-    // --- UI Components Updated ---
     private ImageView detailPoster;
     private TextView detailTitle, detailRating, detailOverview, detailYear;
     private FloatingActionButton fabShare;
@@ -108,7 +107,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         rvCast.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvCast.setAdapter(castAdapter);
 
-        // WatchProviderAdapter initialization kept just in case you add it back to XML
         watchProviderAdapter = new WatchProviderAdapter(this);
         watchProviderAdapter.setOnProviderClickListener(this);
     }
@@ -270,13 +268,43 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         WebView webView = view.findViewById(R.id.webViewTrailer);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl(url);
+
+        String videoId = "";
+        if (url.contains("watch?v=")) {
+            String[] parts = url.split("watch\\?v=");
+            if (parts.length > 1) {
+                videoId = parts[1].split("&")[0];
+            }
+        } else if (url.contains("youtu.be/")) {
+            String[] parts = url.split("youtu.be/");
+            if (parts.length > 1) {
+                videoId = parts[1].split("\\?")[0];
+            }
+        }
+
+        String htmlData = "<html><body style=\"margin:0;padding:0;background:black;\">" +
+                "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + videoId + "?autoplay=1\"" +
+                " frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>" +
+                "</body></html>";
+
+        if (!videoId.isEmpty()) {
+            webView.loadData(htmlData, "text/html", "utf-8");
+        } else {
+            webView.setWebViewClient(new android.webkit.WebViewClient());
+            webView.loadUrl(url);
+        }
+
         builder.setView(view);
         AlertDialog dialog = builder.create();
-        dialog.setOnDismissListener(dialogInterface -> webView.destroy());
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            webView.stopLoading();
+            webView.loadUrl("about:blank");
+            webView.destroy();
+        });
+
         dialog.show();
     }
-
     private void playTrailer() {
         if (trailerUrl != null) {
             showTrailerInWebViewDialog(trailerUrl);

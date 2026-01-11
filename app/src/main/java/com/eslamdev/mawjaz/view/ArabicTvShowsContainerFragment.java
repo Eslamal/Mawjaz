@@ -1,4 +1,3 @@
-// أنشئ ملف Java جديد بهذا الاسم
 package com.eslamdev.mawjaz.view;
 import android.os.Bundle;
 import android.view.LayoutInflater;

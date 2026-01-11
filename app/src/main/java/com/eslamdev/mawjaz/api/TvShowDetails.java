@@ -34,7 +34,7 @@ public class TvShowDetails {
     @SerializedName("genres")
     private List<Genre> genres;
 
-    // Getters
+
     public int getId() { return id; }
     public String getName() { return name; }
     public String getOverview() { return overview; }

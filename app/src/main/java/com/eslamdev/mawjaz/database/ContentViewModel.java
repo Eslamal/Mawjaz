@@ -18,14 +18,13 @@ public class ContentViewModel extends AndroidViewModel {
     private final String contentType;
     private final String category;
     private final String language;
-    private final String countryCode; // <-- 1. ADD THIS VARIABLE
+    private final String countryCode;
 
     private final MutableLiveData<List<ContentItem>> items = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private int currentPage = 1;
     private boolean isLastPage = false;
 
-    // 2. MODIFY THE CONSTRUCTOR
     public ContentViewModel(@NonNull Application application, String apiKey, String contentType, String category, String language, String countryCode) {
         super(application);
         this.movieRepository = new MovieRepository(application);
@@ -33,7 +32,7 @@ public class ContentViewModel extends AndroidViewModel {
         this.contentType = contentType;
         this.category = category;
         this.language = language;
-        this.countryCode = countryCode; // <-- ASSIGN THE NEW VARIABLE
+        this.countryCode = countryCode;
         loadFirstPage();
     }
 
@@ -54,11 +53,9 @@ public class ContentViewModel extends AndroidViewModel {
         fetchData();
     }
 
-    // --- 3. SIMPLIFY THE fetchData() METHOD ---
+
     private void fetchData() {
         if ("movie".equals(contentType)) {
-            // The old complex "if/else" is removed.
-            // We now just pass all parameters to the repository.
             movieRepository.fetchMovies(apiKey, category, language, countryCode, currentPage, new MovieRepository.OnMoviesFetchedListener() {
                 @Override
                 public void onSuccess(List<Movie> movies) {
@@ -69,7 +66,6 @@ public class ContentViewModel extends AndroidViewModel {
                 public void onFailure() { handleFailure(); }
             });
         } else if ("tv".equals(contentType)) {
-            // The same simplification for TV shows.
             movieRepository.fetchTvShows(apiKey, category, language, countryCode, currentPage, new MovieRepository.OnTvShowsFetchedListener() {
                 @Override
                 public void onSuccess(List<TvShow> tvShows) {

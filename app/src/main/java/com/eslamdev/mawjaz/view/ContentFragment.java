@@ -32,15 +32,13 @@ public class ContentFragment extends Fragment {
     private TextView errorTextView;
     private ShimmerFrameLayout shimmerFrameLayout;
 
-    // --- THIS IS THE METHOD THAT NEEDS TO BE CORRECTED ---
-    // It now accepts four parameters, including countryCode
     public static ContentFragment newInstance(String contentType, String category, String language, String countryCode) {
         ContentFragment fragment = new ContentFragment();
         Bundle args = new Bundle();
         args.putString("CONTENT_TYPE", contentType);
         args.putString("CATEGORY", category);
         args.putString("LANGUAGE", language);
-        args.putString("COUNTRY_CODE", countryCode); // <-- Add countryCode to bundle
+        args.putString("COUNTRY_CODE", countryCode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,11 +96,8 @@ public class ContentFragment extends Fragment {
             String contentType = getArguments().getString("CONTENT_TYPE");
             String category = getArguments().getString("CATEGORY");
             String language = getArguments().getString("LANGUAGE");
-            // --- THIS IS THE OTHER REQUIRED CHANGE ---
-            // Get the countryCode from the bundle
             String countryCode = getArguments().getString("COUNTRY_CODE");
 
-            // Pass the countryCode to the factory
             ContentViewModelFactory factory = new ContentViewModelFactory(requireActivity().getApplication(), apiKey, contentType, category, language, countryCode);
             viewModel = new ViewModelProvider(this, factory).get(ContentViewModel.class);
         }

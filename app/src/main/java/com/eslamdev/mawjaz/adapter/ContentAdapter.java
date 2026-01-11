@@ -73,7 +73,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
                 holder.overview.setVisibility(View.VISIBLE);
                 holder.overview.setText(item.getOverview());
             } else {
-                // إذا لم يكن هناك overview، قم بإخفاء الـ TextView
                 holder.overview.setText(R.string.sample_movie_overview);
             }
         }
@@ -85,19 +84,17 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             holder.itemView.post(() -> updateFavoriteButtonState(holder.favoriteButton, isFavorite));
         });
 
-        // تفعيل الأنيميشن
+
         ViewCompat.setTransitionName(holder.poster, "poster_" + item.getId());
 
         holder.itemView.setOnClickListener(v -> {
-            // Check if the item is a movie or a TV show
+
             if ("movie".equals(item.getType())) {
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra("id", item.getId());
                 intent.putExtra("title", item.getTitle());
                 intent.putExtra("image_url", "https://image.tmdb.org/t/p/w500" + item.getPosterPath());
 
-                // --- THIS IS THE IMPORTANT CHANGE ---
-                // Pass the original language of the content to the detail screen
                 intent.putExtra("original_language", item.getOriginalLanguage());
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -110,8 +107,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
                 intent.putExtra("title", item.getTitle());
                 intent.putExtra("image_url", "https://image.tmdb.org/t/p/w500" + item.getPosterPath());
 
-                // --- THIS IS THE IMPORTANT CHANGE ---
-                // Also pass it for TV shows
                 intent.putExtra("original_language", item.getOriginalLanguage());
 
                 context.startActivity(intent);

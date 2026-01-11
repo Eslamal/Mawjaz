@@ -45,18 +45,12 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
     private DetailViewModel viewModel;
     private InterstitialAd mInterstitialAd;
 
-    // --- UI Components (Updated for New Design) ---
     private ImageView detailPoster;
     private TextView detailTitle, detailRating, detailOverview, detailYear;
     private FloatingActionButton fabShare;
     private MaterialButton btnPlayTrailer, btnFavorite, btnWatchlist;
     private RecyclerView rvCast;
 
-    // ملاحظة: في التصميم الجديد لم نضف مكان لمزودي المشاهدة (Watch Providers) حالياً
-    // يمكنك إضافتها لاحقاً في ملف XML إذا أردت.
-    // private RecyclerView watchProvidersRecyclerView;
-
-    // Adapters & State
     private CastAdapter castAdapter;
     private WatchProviderAdapter watchProviderAdapter;
     private FavoriteMovieEntity currentMovieEntity;
@@ -84,7 +78,6 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
     }
 
     private void initializeViews() {
-        // --- ربط الـ IDs الجديدة من ملف XML الحديث ---
         detailPoster = findViewById(R.id.detail_poster);
         detailTitle = findViewById(R.id.detail_title);
         detailRating = findViewById(R.id.detail_rating);
@@ -105,7 +98,7 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false); // إخفاء العنوان من التولبار لأننا بنعرضه تحت
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -115,7 +108,6 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
         rvCast.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvCast.setAdapter(castAdapter);
 
-        // إعداد Adapter مزودي الخدمة (حتى لو لم يتم عرضه حالياً في التصميم الجديد)
         watchProviderAdapter = new WatchProviderAdapter(this);
         watchProviderAdapter.setOnProviderClickListener(this);
     }
@@ -123,21 +115,16 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
     private void getIntentData() {
         int movieId = getIntent().getIntExtra("id", -1);
         String movieTitle = getIntent().getStringExtra("title");
-        String moviePosterPath = getIntent().getStringExtra("image_url"); // تأكد أن المفتاح هنا يطابق المرسل
-        // إذا كنت ترسل البوستر كـ "poster" أو مفتاح آخر، عدله هنا.
-        // الكود السابق كان يستخدم "image_url" أو قد يكون "poster_path" حسب الـ Intent المرسل.
+        String moviePosterPath = getIntent().getStringExtra("image_url");
 
         this.originalLanguage = getIntent().getStringExtra("original_language");
 
         currentMovieEntity = new FavoriteMovieEntity(movieId, movieTitle, 0, "", moviePosterPath, "");
 
-        // تفعيل الـ Transition للصورة
         ViewCompat.setTransitionName(detailPoster, "poster_" + movieId);
         detailTitle.setText(movieTitle);
 
-        // تحميل الصورة
         if (moviePosterPath != null && !moviePosterPath.isEmpty()) {
-            // التحقق لو الرابط كامل ولا محتاج Base URL
             String fullUrl = moviePosterPath.startsWith("http") ? moviePosterPath : "https://image.tmdb.org/t/p/w780" + moviePosterPath;
 
             Picasso.get()
@@ -184,10 +171,9 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
 
         viewModel.movieDetails.observe(this, details -> {
             if (details != null) {
-                // تحديث البيانات في الواجهة
                 detailOverview.setText(details.getOverview());
                 detailRating.setText(String.format("%.1f", details.getVoteAverage()));
-                detailTitle.setText(details.getTitle()); // تحديث العنوان بالاسم الكامل من الـ API
+                detailTitle.setText(details.getTitle());
 
                 String releaseDate = details.getReleaseDate();
                 if (releaseDate != null && releaseDate.length() >= 4) {
@@ -196,12 +182,10 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
                     detailYear.setText("");
                 }
 
-                // تحميل الصورة بجودة عالية لو مكنتش موجودة
                 if (details.getPosterPath() != null) {
                     Picasso.get().load("https://image.tmdb.org/t/p/w780" + details.getPosterPath()).into(detailPoster);
                 }
 
-                // تحديث الكيان الحالي عشان الحفظ في المفضلة يكون ببيانات كاملة
                 currentMovieEntity = new FavoriteMovieEntity(
                         details.getId(),
                         details.getTitle(),
@@ -216,7 +200,6 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
         viewModel.isInWatchlist.observe(this, isInWatchlist -> {
             if (isInWatchlist != null) {
                 updateButtonState(btnWatchlist, isInWatchlist, R.drawable.ic_bookmark, R.drawable.ic_bookmark);
-                // نستخدم نفس الأيقونة ولكن نغير اللون في دالة updateButtonState
 
                 if (wasInWatchlist != null && !wasInWatchlist.equals(isInWatchlist)) {
                     Toast.makeText(this, isInWatchlist ? getString(R.string.added_to_watchlist) : getString(R.string.removed_from_watchlist), Toast.LENGTH_SHORT).show();
@@ -252,7 +235,6 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
             if (providersResult != null && providersResult.getProviders() != null && !providersResult.getProviders().isEmpty()) {
                 watchProviderAdapter.setProviderList(providersResult.getProviders());
                 this.watchProviderLink = providersResult.getLink();
-                // لم نضف RecyclerView للمزودين في التصميم الجديد، لذا لن نعرضهم هنا لتجنب الأخطاء
             }
         });
     }
@@ -268,7 +250,7 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
                     @Override
                     public void onAdDismissedFullScreenContent() {
                         playTrailer();
-                        loadInterstitialAd(); // تحميل إعلان جديد للمرة القادمة
+                        loadInterstitialAd();
                     }
                     @Override
                     public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
@@ -296,10 +278,40 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
         WebView webView = view.findViewById(R.id.webViewTrailer);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl(url);
+
+        String videoId = "";
+        if (url.contains("watch?v=")) {
+            String[] parts = url.split("watch\\?v=");
+            if (parts.length > 1) {
+                videoId = parts[1].split("&")[0];
+            }
+        } else if (url.contains("youtu.be/")) {
+            String[] parts = url.split("youtu.be/");
+            if (parts.length > 1) {
+                videoId = parts[1].split("\\?")[0];
+            }
+        }
+        String htmlData = "<html><body style=\"margin:0;padding:0;background:black;\">" +
+                "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + videoId + "?autoplay=1\"" +
+                " frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>" +
+                "</body></html>";
+
+        if (!videoId.isEmpty()) {
+            webView.loadData(htmlData, "text/html", "utf-8");
+        } else {
+            webView.setWebViewClient(new android.webkit.WebViewClient());
+            webView.loadUrl(url);
+        }
+
         builder.setView(view);
         AlertDialog dialog = builder.create();
-        dialog.setOnDismissListener(dialogInterface -> webView.destroy());
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            webView.stopLoading();
+            webView.loadUrl("about:blank");
+            webView.destroy();
+        });
+
         dialog.show();
     }
 
@@ -361,9 +373,8 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
     private void updateButtonState(MaterialButton button, boolean isActive, int activeIcon, int inactiveIcon) {
         button.setIconResource(isActive ? activeIcon : inactiveIcon);
 
-        // تغيير اللون بناءً على الحالة (للمفضلة والـ Watchlist)
         if (isActive) {
-            button.setIconTint(ContextCompat.getColorStateList(this, R.color.colorPrimary)); // أو red للمفضلة
+            button.setIconTint(ContextCompat.getColorStateList(this, R.color.colorPrimary));
             if (button.getId() == R.id.btn_favorite) {
                 button.setIconTint(ContextCompat.getColorStateList(this, R.color.red));
                 button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.red));
@@ -371,12 +382,10 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
                 button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.colorPrimary));
             }
         } else {
-            // الحالة غير النشطة
             button.setIconTint(ContextCompat.getColorStateList(this, R.color.colorPrimary));
             button.setStrokeColor(ContextCompat.getColorStateList(this, R.color.colorPrimary));
 
             if (button.getId() == R.id.btn_watchlist) {
-                // لون خاص للـ Watchlist وهي غير نشطة (رمادي مثلاً)
                 button.setIconTint(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
                 button.setStrokeColor(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
             }
@@ -394,7 +403,6 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
 
     private void loadInterstitialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
-        // ID الإعلان (Test ID)
         String adUnitId = "ca-app-pub-6321231117080513/2496825263";
 
         InterstitialAd.load(this, adUnitId, adRequest,

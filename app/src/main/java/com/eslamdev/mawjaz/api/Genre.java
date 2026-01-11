@@ -9,7 +9,6 @@ public class Genre {
     @SerializedName("name")
     private String name;
 
-    // Getters
     public int getId() { return id; }
     public String getName() { return name; }
 }

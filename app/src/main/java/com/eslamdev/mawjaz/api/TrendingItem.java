@@ -8,9 +8,8 @@ public class TrendingItem {
     private int id;
 
     @SerializedName("media_type")
-    private String mediaType; // "movie" or "tv"
+    private String mediaType;
 
-    // Fields for both
     @SerializedName("overview")
     private String overview;
     @SerializedName("poster_path")
@@ -20,19 +19,17 @@ public class TrendingItem {
     @SerializedName("original_language")
     private String originalLanguage;
 
-    // Movie-specific fields
+
     @SerializedName("title")
     private String title;
     @SerializedName("release_date")
     private String releaseDate;
 
-    // TV-specific fields
     @SerializedName("name")
     private String name;
     @SerializedName("first_air_date")
     private String firstAirDate;
 
-    // --- Getters for all fields ---
 
     public int getId() { return id; }
     public String getMediaType() { return mediaType; }

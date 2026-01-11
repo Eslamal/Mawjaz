@@ -29,9 +29,6 @@ public class MovieRepository {
     private static final String TAG = "MovieRepository";
     private final TMDbApi api;
 
-    /**
-     * واجهة Callback للتواصل بين الـ Repository والـ ViewModel.
-     */
     public interface OnMoviesFetchedListener {
         void onSuccess(List<Movie> movies);
         void onFailure();
@@ -47,14 +44,8 @@ public class MovieRepository {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api = retrofit.create(TMDbApi.class);
-        // تم حذف كود قاعدة البيانات مؤقتًا للتركيز على التحميل التدريجي
     }
 
-    /**
-     * الدالة الجديدة لجلب الأفلام التي تقبل رقم الصفحة و Callback.
-     * @param page رقم الصفحة المطلوب تحميلها.
-     * @param listener الـ Callback الذي سيتم استدعاؤه عند اكتمال الطلب.
-     */
     public void fetchMovies(String apiKey, String category, String language, String countryCode, int page, OnMoviesFetchedListener listener) {
         Call<MovieResponse> call;
         if ("popular".equals(category)) {
@@ -62,8 +53,6 @@ public class MovieRepository {
         } else if ("top_rated".equals(category)) {
             call = api.getTopRatedMovies(apiKey, language, page);
         } else if ("discover".equals(category) && countryCode != null) {
-            // --- ADDED: Logic to handle fetching by country ---
-            // We get the movie data in Arabic ("ar-EG") and filter by the country code
             call = api.discoverMoviesByCountry(apiKey, "ar-EG", countryCode, page);
         } else {
             Log.e(TAG, "Unknown movie category: " + category);
@@ -90,9 +79,6 @@ public class MovieRepository {
         });
     }
 
-    /**
-     * دالة البحث تبقى كما هي في الوقت الحالي.
-     */
     public LiveData<List<ContentItem>> searchAllContent(String apiKey, String query, String language) {
         MutableLiveData<List<ContentItem>> combinedResults = new MutableLiveData<>();
 
@@ -100,7 +86,7 @@ public class MovieRepository {
         List<TvShow> tvShowList = new ArrayList<>();
         AtomicInteger pendingCalls = new AtomicInteger(2);
 
-        // API Call 1: Search for Movies
+
         api.searchMovies(apiKey, query, language).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
@@ -119,7 +105,7 @@ public class MovieRepository {
             }
         });
 
-        // API Call 2: Search for TV Shows
+
         api.searchTvShows(apiKey, query, language).enqueue(new Callback<TvShowResponse>() {
             @Override
             public void onResponse(@NonNull Call<TvShowResponse> call, @NonNull Response<TvShowResponse> response) {
@@ -141,7 +127,7 @@ public class MovieRepository {
         return combinedResults;
     }
 
-    // --- ADDED: Helper method to combine results ---
+
     private void combineAndPostResults(List<Movie> movies, List<TvShow> tvShows, MutableLiveData<List<ContentItem>> liveData) {
         List<ContentItem> contentItems = new ArrayList<>();
         if (movies != null) {
@@ -184,7 +170,6 @@ public class MovieRepository {
         } else if ("top_rated".equals(category)) {
             call = api.getTopRatedTvShows(apiKey, language, page);
         } else if ("discover".equals(category) && countryCode != null) {
-            // --- ADDED: Logic to handle fetching by country ---
             call = api.discoverTvShowsByCountry(apiKey, "ar-EG", countryCode, page);
         } else {
             Log.e(TAG, "Unknown TV show category: " + category);
@@ -211,7 +196,6 @@ public class MovieRepository {
 
 
     public void fetchArabicMovies(String apiKey, String language, int page, OnMoviesFetchedListener listener) {
-        // نستخدم "ar" كفلتر للغة الأصلية
         api.discoverArabicMovies(apiKey, language, "ar", page).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
@@ -230,7 +214,6 @@ public class MovieRepository {
     }
 
     public void fetchArabicTvShows(String apiKey, String language, int page, OnTvShowsFetchedListener listener) {
-        // نستخدم "ar" كفلتر للغة الأصلية
         api.discoverArabicTvShows(apiKey, language, "ar", page).enqueue(new Callback<TvShowResponse>() {
             @Override
             public void onResponse(@NonNull Call<TvShowResponse> call, @NonNull Response<TvShowResponse> response) {
@@ -252,17 +235,17 @@ public class MovieRepository {
     public LiveData<List<ContentItem>> fetchTrending(String apiKey, String language) {
         MutableLiveData<List<ContentItem>> trendingResults = new MutableLiveData<>();
 
-        // 1. Call the correct API method that returns a ContentResponse
+
         api.getTrending(apiKey, language).enqueue(new Callback<ContentResponse>() {
             @Override
             public void onResponse(@NonNull Call<ContentResponse> call, @NonNull Response<ContentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<ContentItem> contentItems = new ArrayList<>();
-                    // 2. Loop through the list of TrendingItem
+
                     for (TrendingItem item : response.body().getResults()) {
-                        // 3. Convert each TrendingItem to a unified ContentItem
+
                         ContentItem contentItem = ContentItem.fromTrendingItem(item);
-                        // Add to the list only if it's a movie or tv show
+
                         if (contentItem != null) {
                             contentItems.add(contentItem);
                         }
@@ -280,10 +263,6 @@ public class MovieRepository {
         });
         return trendingResults;
     }
-
-    // --- ضيف الدوال دي في كلاس MovieRepository ---
-
-    // دالة مساعدة لجلب البيانات للصفحة الرئيسية (Popular Movies)
     public LiveData<List<ContentItem>> getPopularMoviesHome(String apiKey, String language) {
         MutableLiveData<List<ContentItem>> data = new MutableLiveData<>();
         api.getPopularMovies(apiKey, language, 1).enqueue(new Callback<MovieResponse>() {
@@ -305,7 +284,6 @@ public class MovieRepository {
         return data;
     }
 
-    // دالة مساعدة لجلب البيانات للصفحة الرئيسية (Top Rated Movies)
     public LiveData<List<ContentItem>> getTopRatedMoviesHome(String apiKey, String language) {
         MutableLiveData<List<ContentItem>> data = new MutableLiveData<>();
         api.getTopRatedMovies(apiKey, language, 1).enqueue(new Callback<MovieResponse>() {

@@ -24,18 +24,15 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Your Application class should handle loading the theme and locale
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // --- Toolbar Setup ---
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
         }
 
-        // --- ViewPager and TabLayout Setup ---
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(new MainPagerAdapter(this));
@@ -43,13 +40,13 @@ public class MainActivity extends BaseActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText(R.string.main_tab_movies); // Use string resources
+                    tab.setText(R.string.main_tab_movies);
                     break;
                 case 1:
-                    tab.setText(R.string.main_tab_tv_shows); // Use string resources
+                    tab.setText(R.string.main_tab_tv_shows);
                     break;
                 case 2:
-                    tab.setText(R.string.main_tab_arabic); // Use string resources
+                    tab.setText(R.string.main_tab_arabic);
                     break;
             }
         }).attach();
@@ -80,7 +77,6 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, WatchlistActivity.class));
             return true;
         } else if (id == R.id.action_settings) {
-            // Navigate to the new SettingsActivity
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
@@ -88,32 +84,24 @@ public class MainActivity extends BaseActivity {
     }
 
     @SuppressLint("MissingSuperCall")
-    // في MainActivity.java
-
     @Override
     public void onBackPressed() {
-        // إنشاء الديالوج المخصص
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dialog_exit, null);
         builder.setView(view);
-
-        // إنشاء الديالوج وتخلي خلفيته شفافة عشان الكيرفات تبان
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-
-        // ربط الأزرار
         view.findViewById(R.id.btnStay).setOnClickListener(v -> dialog.dismiss());
         view.findViewById(R.id.btnExit).setOnClickListener(v -> {
             dialog.dismiss();
-            super.onBackPressed(); // الخروج الفعلي
+            super.onBackPressed();
         });
 
         dialog.show();
     }
 
-    // --- Adapter for ViewPager ---
     private static class MainPagerAdapter extends FragmentStateAdapter {
         public MainPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);

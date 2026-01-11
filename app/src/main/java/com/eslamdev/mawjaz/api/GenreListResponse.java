@@ -7,6 +7,5 @@ public class GenreListResponse {
     @SerializedName("genres")
     private List<Genre> genres;
 
-    // Getter
     public List<Genre> getGenres() { return genres; }
 }
