@@ -1,55 +1,71 @@
-# ListMovies App 🎬
+# 🎬 Mawjaz - Movies & TV Shows Guide
 
-A feature-rich movie and TV show browser application for Android, built with Java and Material Design 3. 
-The app allows users to discover, search, and manage their favorite movies and TV shows, 
-with full support for both English and Arabic languages.
+**Mawjaz** is a comprehensive Android application designed to provide users with an immersive experience in discovering movies and TV shows. It leverages the **TMDB API** to fetch real-time data, offering features like trending lists, detailed information, search functionality, and local favorites management.
 
----
-
-### ✨ Features
-
-* **Light & Dark Mode:** Full support for modern light and dark themes that can be set manually or follow the system setting.
-* **Bilingual (English & Arabic):** Complete UI translation and right-to-left (RTL) support.
-* **Dynamic Content Language:** Movie/TV show details (title, overview) are displayed in their original language (Arabic for Arabic content, English for others).
-* **Advanced Search:**
-    * **Live Search:** Get instant results for both movies and TV shows as you type.
-    * **Trending & Recent:** The search screen displays trending content by default and keeps a history of your recent searches.
-    * **Genre Filters:** Quick-search by tapping on translated genre chips.
-* **Discover Content:**
-    * Browse by categories like Popular, Top Rated, and Genres.
-    * Dedicated section for Arabic content, subdivided into Egyptian and Gulf categories.
-* **Personal Lists:**
-    * **Favorites:** Add any movie or TV show to a local favorites list.
-    * **Watchlist:** Keep track of what you want to watch later.
-* **Modern UI:**
-    * Built with Material Design 3 components.
-    * Smooth shimmer loading effects.
-    * Shared element transitions for a seamless experience.
+The app follows modern Android development practices, utilizing **MVVM Architecture** and **Material Design 3** components to ensure a smooth and visually appealing user experience.
 
 ---
 
-### 🛠️ Tech Stack & Libraries
+## 📱 Screenshots 
 
-* **Language:** Java
-* **Architecture:** MVVM (ViewModel, Repository, LiveData)
-* **UI:** Android SDK, Material Design 3, Shimmer (by Facebook)
-* **Networking:** Retrofit 2
-* **Database:** Room Persistence Library
-* **Image Loading:** Picasso
-* **API:** The Movie Database (TMDb) API
-
+<p align="center">
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-34.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-36.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-37.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-38.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-39.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-40.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-41.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-42.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-43.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-44.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-45.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-46.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-47.jpg?raw=true" width="200" />
+  <img src="https://github.com/Eslamal/ListMovies/blob/master/mawjazApp/photo_2026-01-11_01-15-49.jpg?raw=true" width="200" />
+</p>
 
 ---
 
-## 🏗️ Architecture
+## ✨ Features 
 
-The application is built using the **MVVM (Model-View-ViewModel)** architecture to ensure a clean separation of concerns, making the code scalable, maintainable, and testable.
+* **Discover:** Browse Trending, Popular, and Top Rated movies/TV shows.
+* **Search:** Powerful search functionality with history tracking and genre filters (Chips).
+* **Details:** Deep dive into content with cast members, trailers (WebView/YouTube), and ratings.
+* **Local Storage:** Save your favorite content to **Favorites** or **Watchlist** to access them offline.
+* **Localization:** Full support for English and Arabic languages (RTL support).
+* **UI/UX:** Modern Material 3 design, Shimmer loading effects, and smooth transitions.
+* **Security:** API Keys are secured using `local.properties` and `BuildConfig`.
 
--   **View (UI Layer):** Activities and Fragments are responsible only for displaying the UI and forwarding user events to the ViewModel.
--   **ViewModel:** Acts as the bridge between the UI and the data layer. It holds all UI-related logic and exposes data to the UI via `LiveData`.
--   **Repository:** Implements the Single Source of Truth principle. It is the sole manager of all app data, deciding whether to fetch it from a remote or local source.
--   **Data Sources:**
-    -   **Remote:**
-        -   **Retrofit:** For consuming the TMDb REST API.
-    -   **Local:**
-        -   **Room Persistence Library:** For local data storage (user lists like Favorites/Watchlist in guest mode) and caching.
+---
+
+## 🛠️ Tech Stack & Architecture 
+
+This project is built using **Java** and follows the **MVVM (Model-View-ViewModel)** architectural pattern to ensure separation of concerns and testability.
+
+### 📚 Libraries & Technologies Used
+
+| Technology | Purpose (Why?) | Where is it used? |
+| :--- | :--- | :--- |
+| **Java** | The primary programming language used for building the app logic. | Entire Project. |
+| **MVVM** | To separate UI logic from business logic, making the code maintainable. | `ViewModel` classes (e.g., `DetailViewModel`, `SearchViewModel`) communicating with `Activities`. |
+| **Retrofit 2** | A type-safe HTTP client for Android. Used for its efficiency and ease of use with APIs. | Fetching data from TMDB API in `MovieRepository`. |
+| **Gson** | To serialize and deserialize JSON data returned from the API. | Converting API responses into Java POJO classes (`MovieResponse`, `ActorDetails`). |
+| **Room Database** | An abstraction layer over SQLite. Used for robust offline data persistence. | Storing `Favorites` and `Watchlist` items locally on the device. |
+| **Picasso** | Image loading library. Lightweight and handles caching automatically. | Loading Movie Posters, Cast images, and Backdrops. |
+| **Material Design 3** | Google's latest design system for building beautiful, usable interfaces. | Buttons, Cards, SearchBar, Chips, BottomNavigation, and Colors. |
+| **Shimmer Effect** | To show a loading skeleton animation instead of a boring spinner. | Used in `HomeFragment` and `SearchActivity` while data is fetching. |
+| **Android Architecture Components** | `LiveData` and `ViewModel` to handle lifecycle-aware data data. | Observing data changes in UI without memory leaks. |
+| **AdMob** | For monetization. | Displaying Interstitial and Banner ads. |
+
+---
+
+## 🏗️ Project Structure 
+
+```text
+com.eslamdev.mawjaz
+├── adapter         # RecyclerView Adapters (MovieAdapter, CastAdapter...)
+├── api             # Retrofit Interface & API Models
+├── database        # Room Entities, DAOs, ViewModels, and Repository
+├── util            # Helper classes (LocaleHelper, Constants)
+└── view            # Activities and Fragments (UI Layer)
