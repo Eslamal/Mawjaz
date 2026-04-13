@@ -117,31 +117,44 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="24dp"
-        android:gravity="center_vertical">
+        android:weightSum="2"> <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnToggleFavorite"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="8dp"
+        android:text="@string/favorites"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_favorite_border"
+        app:iconGravity="textStart"
+        app:strokeColor="?attr/colorPrimary"
+        app:iconTint="?attr/colorPrimary"
+        android:textColor="?attr/colorPrimary"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToggleWatchlist"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:icon="@drawable/ic_bookmark" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleFavorite"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/ic_favorite_border" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnWatchTrailer"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorOnBackground"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/watchlist"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_bookmark"
+            app:iconGravity="textStart"
+            app:strokeColor="?attr/colorOutline"
+            app:iconTint="?attr/colorOnSurfaceVariant"
+            android:textColor="?attr/colorOnSurfaceVariant"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWatchTrailer"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/details_watch_trailer"
-            android:layout_marginEnd="8dp" />
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </LinearLayout>

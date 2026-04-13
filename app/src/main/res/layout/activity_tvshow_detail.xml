@@ -116,49 +116,55 @@
                     tools:text="2024" />
             </LinearLayout>
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="24dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_play_trailer"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:text="@string/details_watch_trailer"
-                    android:textAllCaps="false"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/colorPrimary"
-                    app:icon="@drawable/ic_play_arrow"
-                    app:iconGravity="textStart" />
+                android:layout_marginTop="24dp"
+                android:weightSum="2"> <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_play_trailer"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="@string/details_watch_trailer"
+                android:textAllCaps="false"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/colorPrimary"
+                app:icon="@drawable/ic_play_arrow"
+                app:iconGravity="textStart"
+                android:visibility="gone"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_favorite"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="56dp"
+                    android:layout_width="0dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:padding="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/favorites"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_favorite_border"
                     app:iconGravity="textStart"
                     app:strokeColor="@color/colorPrimary"
-                    app:iconTint="@color/colorPrimary"/>
+                    app:iconTint="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_watchlist"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="56dp"
+                    android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginStart="8dp"
-                    android:padding="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/watchlist"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_bookmark"
                     app:iconGravity="textStart"
                     app:strokeColor="?attr/colorOutline"
-                    app:iconTint="?attr/colorOnSurfaceVariant"/>
+                    app:iconTint="?attr/colorOnSurfaceVariant"
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
 
             </LinearLayout>
 

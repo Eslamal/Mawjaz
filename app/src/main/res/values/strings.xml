@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mawjaz</string>
+    <string name="app_name">MoviePal</string>
 
     <string name="main_tab_movies">Movies</string>
     <string name="main_tab_tv_shows">TV Shows</string>
