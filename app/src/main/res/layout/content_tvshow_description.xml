@@ -143,13 +143,5 @@
             app:iconTint="?attr/colorOnSurfaceVariant"
             android:textColor="?attr/colorOnSurfaceVariant"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnWatchTrailer"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="@string/details_watch_trailer"
-            android:visibility="gone"/>
-
     </LinearLayout>
 </LinearLayout>

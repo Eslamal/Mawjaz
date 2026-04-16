@@ -123,18 +123,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="24dp"
-                android:weightSum="2"> <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_play_trailer"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:text="@string/details_watch_trailer"
-                android:textAllCaps="false"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/colorPrimary"
-                app:icon="@drawable/ic_play_arrow"
-                app:iconGravity="textStart"
-                android:visibility="gone"/>
+                android:weightSum="2">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_favorite"

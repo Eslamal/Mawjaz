@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,14 +45,13 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
     private ImageView detailPoster;
     private TextView detailTitle, detailRating, detailOverview, detailYear;
     private FloatingActionButton fabShare;
-    private MaterialButton btnPlayTrailer, btnFavorite, btnWatchlist;
+    private MaterialButton btnFavorite, btnWatchlist;
     private RecyclerView rvCast;
 
     private CastAdapter castAdapter;
     private WatchProviderAdapter watchProviderAdapter;
     private FavoriteMovieEntity currentTvShowEntity;
     private String watchProviderLink = null;
-    private String trailerUrl = null;
     private AlertDialog actorDetailsDialog;
     private Boolean wasFavorite = null;
     private Boolean wasInWatchlist = null;
@@ -84,8 +81,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         detailYear = findViewById(R.id.detail_year);
 
         fabShare = findViewById(R.id.fabShare);
-
-        btnPlayTrailer = findViewById(R.id.btn_play_trailer);
         btnFavorite = findViewById(R.id.btn_favorite);
         btnWatchlist = findViewById(R.id.btn_watchlist);
 
@@ -211,11 +206,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
             }
         });
 
-        viewModel.trailerUrl.observe(this, url -> {
-            this.trailerUrl = url;
-            btnPlayTrailer.setEnabled(url != null);
-        });
-
         viewModel.tvShowCast.observe(this, cast -> {
             if (cast != null && !cast.isEmpty()) {
                 castAdapter.setCastList(cast);
@@ -237,21 +227,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
         btnFavorite.setOnClickListener(v -> viewModel.toggleFavoriteStatus(currentTvShowEntity));
         btnWatchlist.setOnClickListener(v -> viewModel.toggleWatchlistStatus(currentTvShowEntity));
 
-        btnPlayTrailer.setOnClickListener(v -> {
-            if (mInterstitialAd != null) {
-                mInterstitialAd.show(TvShowDetailActivity.this);
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        playTrailer();
-                        loadInterstitialAd();
-                    }
-                });
-            } else {
-                playTrailer();
-            }
-        });
-
         fabShare.setOnClickListener(v -> {
             if (currentTvShowEntity != null) {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -260,57 +235,6 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)));
             }
         });
-    }
-
-    private void showTrailerInWebViewDialog(String url) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_webview_trailer, null);
-        WebView webView = view.findViewById(R.id.webViewTrailer);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-
-        String videoId = "";
-        if (url.contains("watch?v=")) {
-            String[] parts = url.split("watch\\?v=");
-            if (parts.length > 1) {
-                videoId = parts[1].split("&")[0];
-            }
-        } else if (url.contains("youtu.be/")) {
-            String[] parts = url.split("youtu.be/");
-            if (parts.length > 1) {
-                videoId = parts[1].split("\\?")[0];
-            }
-        }
-
-        String htmlData = "<html><body style=\"margin:0;padding:0;background:black;\">" +
-                "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + videoId + "?autoplay=1\"" +
-                " frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>" +
-                "</body></html>";
-
-        if (!videoId.isEmpty()) {
-            webView.loadData(htmlData, "text/html", "utf-8");
-        } else {
-            webView.setWebViewClient(new android.webkit.WebViewClient());
-            webView.loadUrl(url);
-        }
-
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-
-        dialog.setOnDismissListener(dialogInterface -> {
-            webView.stopLoading();
-            webView.loadUrl("about:blank");
-            webView.destroy();
-        });
-
-        dialog.show();
-    }
-    private void playTrailer() {
-        if (trailerUrl != null) {
-            showTrailerInWebViewDialog(trailerUrl);
-        } else {
-            Toast.makeText(this, R.string.trailer_not_available, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

@@ -20,7 +20,6 @@ public class TvShowDetailViewModel extends AndroidViewModel {
     private final String originalLanguage;
 
     public final LiveData<TvShowDetails> tvShowDetails;
-    public final LiveData<String> trailerUrl;
     public final LiveData<List<CastMember>> tvShowCast;
     public final LiveData<WatchProvidersResult> watchProviders;
 
@@ -39,7 +38,6 @@ public class TvShowDetailViewModel extends AndroidViewModel {
 
         this.tvShowDetails = repository.getTvShowDetails(tvId, apiKey, originalLanguage);
         this.tvShowCast = repository.getTvShowCast(tvId, apiKey, originalLanguage);
-        this.trailerUrl = repository.getTvShowTrailerUrl(tvId, apiKey);
         this.watchProviders = repository.getTvShowWatchProviders(tvId, apiKey);
 
         this.isFavorite = repository.isFavorite(tvId);

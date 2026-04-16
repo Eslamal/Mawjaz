@@ -20,7 +20,6 @@ public class DetailViewModel extends AndroidViewModel {
     private final String originalLanguage;
 
     public final LiveData<Boolean> isFavorite;
-    public final LiveData<String> trailerUrl;
     public final LiveData<List<CastMember>> movieCast;
     public final LiveData<Boolean> isInWatchlist;
     public final LiveData<DetailRepository.WatchProvidersResult> watchProviders;
@@ -40,7 +39,6 @@ public class DetailViewModel extends AndroidViewModel {
         this.isFavorite = repository.isFavorite(movieId);
         this.isInWatchlist = repository.isMovieInWatchlist(movieId);
         this.watchProviders = repository.getWatchProviders(movieId, apiKey);
-        this.trailerUrl = repository.getTrailerUrl(movieId, apiKey);
 
 
         this.movieCast = repository.getMovieCast(movieId, apiKey, this.originalLanguage);

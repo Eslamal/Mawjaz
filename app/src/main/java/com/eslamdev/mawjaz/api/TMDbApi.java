@@ -21,8 +21,6 @@ public interface TMDbApi {
             @Query("page") int page
     );
 
-    @GET("movie/{movie_id}/videos")
-    Call<VideoResponse> getMovieVideos(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}/credits")
     Call<CreditsResponse> getMovieCredits(@Path("movie_id") int movieId, @Query("api_key") String apiKey, @Query("language") String language);
@@ -47,9 +45,6 @@ public interface TMDbApi {
 
     @GET("tv/{tv_id}")
     Call<TvShowDetails> getTvShowDetails(@Path("tv_id") int tvId, @Query("api_key") String apiKey, @Query("language") String language);
-
-    @GET("tv/{tv_id}/videos")
-    Call<VideoResponse> getTvShowVideos(@Path("tv_id") int tvId, @Query("api_key") String apiKey);
 
     @GET("tv/{tv_id}/credits")
     Call<CreditsResponse> getTvShowCredits(@Path("tv_id") int tvId, @Query("api_key") String apiKey, @Query("language") String language);

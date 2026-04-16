@@ -13,8 +13,6 @@ import com.eslamdev.mawjaz.api.Movie;
 import com.eslamdev.mawjaz.api.Provider;
 import com.eslamdev.mawjaz.api.TMDbApi;
 import com.eslamdev.mawjaz.api.TvShowDetails;
-import com.eslamdev.mawjaz.api.Video;
-import com.eslamdev.mawjaz.api.VideoResponse;
 import com.eslamdev.mawjaz.api.WatchProviderResults;
 
 import java.util.ArrayList;
@@ -69,43 +67,6 @@ public class DetailRepository {
         return favoriteMovieDao.isFavoriteLiveData(movieId);
     }
 
-    public LiveData<String> getTrailerUrl(int movieId, String apiKey) {
-        MutableLiveData<String> trailerUrlLiveData = new MutableLiveData<>();
-        tmDbApi.getMovieVideos(movieId, apiKey).enqueue(new Callback<VideoResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<VideoResponse> call, @NonNull Response<VideoResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String youtubeKey = findBestTrailerKey(response.body().getResults());
-                    if (youtubeKey != null) {
-                        trailerUrlLiveData.postValue("https://www.youtube.com/embed/" + youtubeKey);
-                    } else {
-                        trailerUrlLiveData.postValue(null);
-                    }
-                } else {
-                    trailerUrlLiveData.postValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<VideoResponse> call, @NonNull Throwable t) {
-                trailerUrlLiveData.postValue(null);
-            }
-        });
-        return trailerUrlLiveData;
-    }
-
-    private String findBestTrailerKey(List<Video> videos) {
-        String key = null;
-        for (Video video : videos) {
-            if ("Trailer".equalsIgnoreCase(video.getType()) && "YouTube".equalsIgnoreCase(video.getSite())) {
-                return video.getKey();
-            }
-            if (key == null && "Teaser".equalsIgnoreCase(video.getType()) && "YouTube".equalsIgnoreCase(video.getSite())) {
-                key = video.getKey();
-            }
-        }
-        return key;
-    }
 
     public void addToFavorites(FavoriteMovieEntity movie) {
         databaseExecutor.execute(() -> favoriteMovieDao.insertFavoriteMovie(movie));
@@ -252,31 +213,6 @@ public class DetailRepository {
 
         return resultLiveData;
     }
-
-
-
-
-    public LiveData<String> getTvShowTrailerUrl(int tvId, String apiKey) {
-        MutableLiveData<String> trailerUrlLiveData = new MutableLiveData<>();
-        tmDbApi.getTvShowVideos(tvId, apiKey).enqueue(new Callback<VideoResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<VideoResponse> call, @NonNull Response<VideoResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String youtubeKey = findBestTrailerKey(response.body().getResults());
-                    trailerUrlLiveData.postValue(youtubeKey != null ? "https://www.youtube.com/embed/" + youtubeKey : null);
-                } else {
-                    trailerUrlLiveData.postValue(null);
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<VideoResponse> call, @NonNull Throwable t) {
-                trailerUrlLiveData.postValue(null);
-            }
-        });
-        return trailerUrlLiveData;
-    }
-
-
 
     public LiveData<WatchProvidersResult> getTvShowWatchProviders(int tvId, String apiKey) {
         MutableLiveData<WatchProvidersResult> resultLiveData = new MutableLiveData<>();
