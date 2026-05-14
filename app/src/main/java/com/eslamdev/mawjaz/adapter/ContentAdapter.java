@@ -15,6 +15,7 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.eslamdev.mawjaz.R;
 import com.eslamdev.mawjaz.api.ContentItem;
 import com.eslamdev.mawjaz.database.AppDatabase;
