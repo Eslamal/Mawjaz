@@ -1,13 +1,16 @@
 package com.eslamdev.mawjaz.database;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.eslamdev.mawjaz.api.ContentItem;
 import com.eslamdev.mawjaz.api.Movie;
 import com.eslamdev.mawjaz.api.TvShow;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,8 +39,13 @@ public class ContentViewModel extends AndroidViewModel {
         loadFirstPage();
     }
 
-    public LiveData<List<ContentItem>> getItems() { return items; }
-    public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<List<ContentItem>> getItems() {
+        return items;
+    }
+
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
 
     public void loadFirstPage() {
         currentPage = 1;
@@ -62,8 +70,11 @@ public class ContentViewModel extends AndroidViewModel {
                     List<ContentItem> newItems = movies.stream().map(ContentItem::fromMovie).collect(Collectors.toList());
                     handleSuccess(newItems);
                 }
+
                 @Override
-                public void onFailure() { handleFailure(); }
+                public void onFailure() {
+                    handleFailure();
+                }
             });
         } else if ("tv".equals(contentType)) {
             movieRepository.fetchTvShows(apiKey, category, language, countryCode, currentPage, new MovieRepository.OnTvShowsFetchedListener() {
@@ -72,8 +83,11 @@ public class ContentViewModel extends AndroidViewModel {
                     List<ContentItem> newItems = tvShows.stream().map(ContentItem::fromTvShow).collect(Collectors.toList());
                     handleSuccess(newItems);
                 }
+
                 @Override
-                public void onFailure() { handleFailure(); }
+                public void onFailure() {
+                    handleFailure();
+                }
             });
         }
     }

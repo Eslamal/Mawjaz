@@ -2,6 +2,7 @@ package com.eslamdev.mawjaz.database;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -31,10 +32,13 @@ public class MovieRepository {
 
     public interface OnMoviesFetchedListener {
         void onSuccess(List<Movie> movies);
+
         void onFailure();
     }
+
     public interface OnTvShowsFetchedListener {
         void onSuccess(List<TvShow> tvShows);
+
         void onFailure();
     }
 
@@ -97,6 +101,7 @@ public class MovieRepository {
                     combineAndPostResults(movieList, tvShowList, combinedResults);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
                 if (pendingCalls.decrementAndGet() == 0) {
@@ -116,6 +121,7 @@ public class MovieRepository {
                     combineAndPostResults(movieList, tvShowList, combinedResults);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<TvShowResponse> call, @NonNull Throwable t) {
                 if (pendingCalls.decrementAndGet() == 0) {
@@ -263,6 +269,7 @@ public class MovieRepository {
         });
         return trendingResults;
     }
+
     public LiveData<List<ContentItem>> getPopularMoviesHome(String apiKey, String language) {
         MutableLiveData<List<ContentItem>> data = new MutableLiveData<>();
         api.getPopularMovies(apiKey, language, 1).enqueue(new Callback<MovieResponse>() {
@@ -276,6 +283,7 @@ public class MovieRepository {
                     data.postValue(items);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
                 data.postValue(null);
@@ -297,6 +305,7 @@ public class MovieRepository {
                     data.postValue(items);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
                 data.postValue(null);

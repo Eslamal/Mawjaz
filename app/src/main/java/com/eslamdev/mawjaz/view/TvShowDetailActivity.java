@@ -132,6 +132,7 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
                         public void onSuccess() {
                             supportStartPostponedEnterTransition();
                         }
+
                         @Override
                         public void onError(Exception e) {
                             supportStartPostponedEnterTransition();
@@ -305,6 +306,7 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
 
         dialog.show();
     }
+
     private void playTrailer() {
         if (trailerUrl != null) {
             showTrailerInWebViewDialog(trailerUrl);
@@ -397,6 +399,7 @@ public class TvShowDetailActivity extends BaseActivity implements CastAdapter.On
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 mInterstitialAd = interstitialAd;
             }
+
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 mInterstitialAd = null;

@@ -114,6 +114,5 @@ public class FavoritesActivity extends BaseActivity implements MovieAdapter.OnMo
 
     @Override
     public void onFavoriteStatusChanged(Movie movie, boolean isFavorite) {
-        // لا نحتاج لتنفيذ شيء هنا لأننا في صفحة المفضلة، أي تغيير يعني الحذف
     }
 }

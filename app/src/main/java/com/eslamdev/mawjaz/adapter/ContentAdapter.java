@@ -78,7 +78,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             }
         }
 
-        // تفعيل زر المفضلة لكل العناصر
         holder.favoriteButton.setVisibility(View.VISIBLE);
         databaseExecutor.execute(() -> {
             boolean isFavorite = favoriteMovieDao.isMovieFavorite(item.getId());
