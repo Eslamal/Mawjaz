@@ -60,6 +60,7 @@ public interface TMDbApi {
 
     @GET("search/movie")
     Call<MovieResponse> searchMovies(@Query("api_key") String apiKey, @Query("query") String query, @Query("language") String language);
+
     @GET("search/tv")
     Call<TvShowResponse> searchTvShows(@Query("api_key") String apiKey, @Query("query") String query, @Query("language") String language);
 
@@ -92,6 +93,7 @@ public interface TMDbApi {
             @Query("with_origin_country") String countryCode,
             @Query("page") int page
     );
+
     @GET("movie/{movie_id}")
     Call<Movie> getMovieDetails(
             @Path("movie_id") int movieId,
@@ -101,8 +103,8 @@ public interface TMDbApi {
 
     @GET("trending/all/day")
     Call<ContentResponse> getTrending(
-                                       @Query("api_key") String apiKey,
-                                       @Query("language") String language
+            @Query("api_key") String apiKey,
+            @Query("language") String language
     );
 
 

@@ -1,6 +1,7 @@
 package com.eslamdev.mawjaz.api;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class TvShowDetails {
@@ -35,14 +36,43 @@ public class TvShowDetails {
     private List<Genre> genres;
 
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getOverview() { return overview; }
-    public String getPosterPath() { return posterPath; }
-    public String getBackdropPath() { return backdropPath; }
-    public double getVoteAverage() { return voteAverage; }
-    public String getFirstAirDate() { return firstAirDate; }
-    public int getNumberOfSeasons() { return numberOfSeasons; }
-    public int getNumberOfEpisodes() { return numberOfEpisodes; }
-    public List<Genre> getGenres() { return genres; }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public String getFirstAirDate() {
+        return firstAirDate;
+    }
+
+    public int getNumberOfSeasons() {
+        return numberOfSeasons;
+    }
+
+    public int getNumberOfEpisodes() {
+        return numberOfEpisodes;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
 }

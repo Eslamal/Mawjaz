@@ -22,15 +22,37 @@ public class ContentItem {
     }
 
 
-    public int getId() { return id; }
-    public String getTitle() { return title; }
-    public double getVoteAverage() { return voteAverage; }
-    public String getOverview() { return overview; }
-    public String getPosterPath() { return posterPath; }
-    public String getReleaseDate() { return releaseDate; }
-    public String getType() { return type; }
+    public int getId() {
+        return id;
+    }
 
-    public String getOriginalLanguage() { return originalLanguage; }
+    public String getTitle() {
+        return title;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
 
     public static ContentItem fromMovie(Movie movie) {
         return new ContentItem(

@@ -135,6 +135,7 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
                         public void onSuccess() {
                             supportStartPostponedEnterTransition();
                         }
+
                         @Override
                         public void onError(Exception e) {
                             supportStartPostponedEnterTransition();
@@ -252,6 +253,7 @@ public class DetailActivity extends BaseActivity implements CastAdapter.OnCastMe
                         playTrailer();
                         loadInterstitialAd();
                     }
+
                     @Override
                     public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                         playTrailer();

@@ -1,6 +1,7 @@
 package com.eslamdev.mawjaz.database;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.eslamdev.mawjaz.api.Movie;
 
 public class GenreMoviesViewModel extends AndroidViewModel {
@@ -27,8 +29,13 @@ public class GenreMoviesViewModel extends AndroidViewModel {
         loadFirstPage();
     }
 
-    public LiveData<List<Movie>> getMovies() { return movies; }
-    public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<List<Movie>> getMovies() {
+        return movies;
+    }
+
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
 
     public void loadFirstPage() {
         currentPage = 1;
@@ -40,6 +47,7 @@ public class GenreMoviesViewModel extends AndroidViewModel {
                 movies.setValue(newMovies);
                 isLoading.setValue(false);
             }
+
             @Override
             public void onFailure() {
                 movies.setValue(null);
@@ -64,6 +72,7 @@ public class GenreMoviesViewModel extends AndroidViewModel {
                 }
                 isLoading.setValue(false);
             }
+
             @Override
             public void onFailure() {
                 isLoading.setValue(false);

@@ -1,6 +1,7 @@
 package com.eslamdev.mawjaz.database;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -22,12 +23,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 
 
 public class DetailRepository {
@@ -46,8 +47,13 @@ public class DetailRepository {
             this.link = link;
         }
 
-        public List<Provider> getProviders() { return providers; }
-        public String getLink() { return link; }
+        public List<Provider> getProviders() {
+            return providers;
+        }
+
+        public String getLink() {
+            return link;
+        }
     }
 
 
@@ -129,6 +135,7 @@ public class DetailRepository {
                     castLiveData.postValue(null);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<CreditsResponse> call, @NonNull Throwable t) {
                 castLiveData.postValue(null);
@@ -147,6 +154,7 @@ public class DetailRepository {
             public void onResponse(@NonNull Call<TvShowDetails> call, @NonNull Response<TvShowDetails> response) {
                 detailsLiveData.postValue(response.isSuccessful() ? response.body() : null);
             }
+
             @Override
             public void onFailure(@NonNull Call<TvShowDetails> call, @NonNull Throwable t) {
                 detailsLiveData.postValue(null);
@@ -165,6 +173,7 @@ public class DetailRepository {
             public void onResponse(@NonNull Call<CreditsResponse> call, @NonNull Response<CreditsResponse> response) {
                 castLiveData.postValue(response.isSuccessful() ? response.body().getCast() : null);
             }
+
             @Override
             public void onFailure(@NonNull Call<CreditsResponse> call, @NonNull Throwable t) {
                 castLiveData.postValue(null);
@@ -254,8 +263,6 @@ public class DetailRepository {
     }
 
 
-
-
     public LiveData<String> getTvShowTrailerUrl(int tvId, String apiKey) {
         MutableLiveData<String> trailerUrlLiveData = new MutableLiveData<>();
         tmDbApi.getTvShowVideos(tvId, apiKey).enqueue(new Callback<VideoResponse>() {
@@ -268,6 +275,7 @@ public class DetailRepository {
                     trailerUrlLiveData.postValue(null);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<VideoResponse> call, @NonNull Throwable t) {
                 trailerUrlLiveData.postValue(null);
@@ -275,7 +283,6 @@ public class DetailRepository {
         });
         return trailerUrlLiveData;
     }
-
 
 
     public LiveData<WatchProvidersResult> getTvShowWatchProviders(int tvId, String apiKey) {
@@ -296,6 +303,7 @@ public class DetailRepository {
                     resultLiveData.postValue(null);
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<WatchProviderResults> call, @NonNull Throwable t) {
                 resultLiveData.postValue(null);

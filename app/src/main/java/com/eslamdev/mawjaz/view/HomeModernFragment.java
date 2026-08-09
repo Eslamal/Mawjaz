@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,8 +22,10 @@ import com.eslamdev.mawjaz.api.ContentItem;
 import com.eslamdev.mawjaz.database.MovieRepository;
 import com.eslamdev.mawjaz.util.LocalHelper;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.Random;
+
 
 public class HomeModernFragment extends Fragment {
 
